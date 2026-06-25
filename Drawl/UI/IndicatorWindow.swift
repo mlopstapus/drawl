@@ -117,24 +117,27 @@ public class IndicatorWindow: NSPanel {
     }
     
     public func show(at position: IndicatorPosition) {
-        updatePosition(for: position)
-        
-        self.alphaValue = 0.0
-        self.makeKeyAndOrderFront(nil)
-        NSAnimationContext.runAnimationGroup { context in
-            context.duration = 0.2
-            context.timingFunction = CAMediaTimingFunction(name: .easeIn)
-            self.animator().alphaValue = 1.0
+        DispatchQueue.main.async {
+            self.updatePosition(for: position)
+            self.alphaValue = 0.0
+            self.makeKeyAndOrderFront(nil)
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.2
+                context.timingFunction = CAMediaTimingFunction(name: .easeIn)
+                self.animator().alphaValue = 1.0
+            }
         }
     }
-    
+
     public func hide() {
-        NSAnimationContext.runAnimationGroup { context in
-            context.duration = 0.3
-            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
-            self.animator().alphaValue = 0.0
-        } completionHandler: {
-            self.orderOut(nil)
+        DispatchQueue.main.async {
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.3
+                context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+                self.animator().alphaValue = 0.0
+            } completionHandler: {
+                self.orderOut(nil)
+            }
         }
     }
     
