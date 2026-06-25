@@ -1,0 +1,97 @@
+import Foundation
+import AppKit
+
+public class TranscriptionSession {
+    private let engine: TranscriptionEngineProtocol
+    private let textInsertionService: TextInsertionServiceProtocol
+    private let historyStore: HistoryStore
+    private let modelTier: ModelTier
+    
+    private let bufferProcessor = AudioBufferProcessor()
+    private var startTime: Date?
+    private var sessionText: String = ""
+    private var segmentCount = 0
+    private var sourceAppName: String?
+    
+    public init(
+        engine: TranscriptionEngineProtocol,
+        textInsertionService: TextInsertionServiceProtocol,
+        historyStore: HistoryStore,
+        modelTier: ModelTier
+    ) {
+        self.engine = engine
+        self.textInsertionService = textInsertionService
+        self.historyStore = historyStore
+        self.modelTier = modelTier
+        
+        setupBufferProcessor()
+    }
+    
+    private func setupBufferProcessor() {
+        bufferProcessor.onSegmentReady = { [weak self] samples in
+            guard let self = self else { return }
+            Task {
+                await self.transcribeAndInsert(samples)
+            }
+        }
+    }
+    
+    public func start() {
+        self.startTime = Date()
+        self.sessionText = ""
+        self.segmentCount = 0
+        
+        if let activeApp = NSWorkspace.shared.frontmostApplication {
+            self.sourceAppName = activeApp.localizedName
+        }
+    }
+    
+    public func stop() async {
+        bufferProcessor.flush()
+        
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        guard let start = startTime, !sessionText.isEmpty else { return }
+        
+        let end = Date()
+        let duration = end.timeIntervalSince(start)
+        
+        let entry = HistoryEntry(
+            text: sessionText,
+            timestamp: end,
+            sourceAppName: sourceAppName,
+            duration: duration,
+            modelTier: modelTier.rawValue
+        )
+        
+        do {
+            try historyStore.insert(entry: entry)
+        } catch {
+            print("Failed to save session history: \(error)")
+        }
+    }
+    
+    public func processAudioBuffer(_ samples: [Float]) async {
+        bufferProcessor.process(samples: samples)
+    }
+    
+    private func transcribeAndInsert(_ samples: [Float]) async {
+        do {
+            let transcribed = try await engine.transcribe(audioSamples: samples, sampleRate: 16000)
+            let trimmed = transcribed.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmed.isEmpty else { return }
+            
+            try await textInsertionService.insertText(trimmed + " ")
+            
+            if self.sessionText.isEmpty {
+                self.sessionText = trimmed
+            } else {
+                self.sessionText += " " + trimmed
+            }
+            self.segmentCount += 1
+            
+        } catch {
+            print("Transcription session segment error: \(error)")
+        }
+    }
+}

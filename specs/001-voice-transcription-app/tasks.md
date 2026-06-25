@@ -24,12 +24,12 @@
 
 **Purpose**: Create the Xcode project, configure dependencies, and establish project skeleton
 
-- [ ] T001 Create Xcode project `Drawl.xcodeproj` with Swift app target `Drawl` and test target `DrawlTests`; set deployment target to macOS 13.0, set `LSUIElement=true` in Info.plist, disable App Sandbox in entitlements
-- [ ] T002 Add SPM dependency: whisper.cpp (`https://github.com/ggerganov/whisper.cpp`) and GRDB.swift (`https://github.com/groue/GRDB.swift`) via Xcode Package Dependencies
-- [ ] T003 [P] Create directory structure under `Drawl/`: `App/`, `Audio/`, `Transcription/`, `Input/`, `UI/`, `Storage/`, `Permissions/`, `Resources/Assets.xcassets`
-- [ ] T004 [P] Create directory structure under `DrawlTests/` mirroring source directories
-- [ ] T005 [P] Add `NSMicrophoneUsageDescription` and `NSAppleEventsUsageDescription` to `Drawl/App/Info.plist`
-- [ ] T006 [P] Create app entry point `Drawl/App/DrawlApp.swift` with `@main` and `NSApplication` setup as a menu bar-only app (no main window, `NSApp.setActivationPolicy(.accessory)`)
+- [X] T001 Create Xcode project `Drawl.xcodeproj` with Swift app target `Drawl` and test target `DrawlTests`; set deployment target to macOS 13.0, set `LSUIElement=true` in Info.plist, disable App Sandbox in entitlements
+- [X] T002 Add SPM dependency: whisper.cpp (`https://github.com/ggerganov/whisper.cpp`) and GRDB.swift (`https://github.com/groue/GRDB.swift`) via Xcode Package Dependencies
+- [X] T003 [P] Create directory structure under `Drawl/`: `App/`, `Audio/`, `Transcription/`, `Input/`, `UI/`, `Storage/`, `Permissions/`, `Resources/Assets.xcassets`
+- [X] T004 [P] Create directory structure under `DrawlTests/` mirroring source directories
+- [X] T005 [P] Add `NSMicrophoneUsageDescription` and `NSAppleEventsUsageDescription` to `Drawl/App/Info.plist`
+- [X] T006 [P] Create app entry point `Drawl/App/DrawlApp.swift` with `@main` and `NSApplication` setup as a menu bar-only app (no main window, `NSApp.setActivationPolicy(.accessory)`)
 
 **Checkpoint**: Empty app runs, appears only in menu bar, no Dock icon
 
@@ -43,16 +43,16 @@
 
 ### Tests for Foundational Phase
 
-- [ ] T007 [P] Write unit test for `PreferencesStore` in `DrawlTests/PreferencesStoreTests.swift`: test default values, read/write hotkey settings, read/write model selection, persistence across re-instantiation
-- [ ] T008 [P] Write unit test for `HistoryStore` in `DrawlTests/HistoryStoreTests.swift`: test insert entry, fetch entries sorted by date, search by text, delete entries older than 30 days, empty state
+- [X] T007 [P] Write unit test for `PreferencesStore` in `DrawlTests/PreferencesStoreTests.swift`: test default values, read/write hotkey settings, read/write model selection, persistence across re-instantiation
+- [X] T008 [P] Write unit test for `HistoryStore` in `DrawlTests/HistoryStoreTests.swift`: test insert entry, fetch entries sorted by date, search by text, delete entries older than 30 days, empty state
 
 ### Implementation for Foundational Phase
 
-- [ ] T009 [P] Implement `PreferencesStore` in `Drawl/Storage/PreferencesStore.swift`: UserDefaults wrapper with properties for `hotkeyKeyCode`, `hotkeyModifiers`, `selectedModelId`, `language`, `indicatorPosition`, `launchAtLogin`, `hasCompletedSetup`, `historyRetentionDays` with defaults per data-model.md
-- [ ] T010 [P] Implement `HistoryStore` in `Drawl/Storage/HistoryStore.swift`: SQLite persistence via GRDB.swift for `HistoryEntry` records — insert, fetch (reverse-chronological), search by text content, purge entries older than `historyRetentionDays`, count
-- [ ] T011 [P] Define enumerations in `Drawl/App/Models.swift`: `ModelTier` (tiny/base/small with display names and file sizes), `IndicatorPosition` (nearCursor, topRight, topLeft, bottomRight, bottomLeft), `AppState` (idle, listening, processing, setupRequired, modelDownloading, error)
-- [ ] T012 [P] Implement `MicrophonePermission` in `Drawl/Permissions/MicrophonePermission.swift`: check authorization status via `AVCaptureDevice.authorizationStatus(for: .audio)`, request access, provide observable `isGranted` property
-- [ ] T013 [P] Implement `AccessibilityPermission` in `Drawl/Permissions/AccessibilityPermission.swift`: check via `AXIsProcessTrusted()`, provide `openSystemSettings()` to deep-link to Accessibility pane, provide observable `isGranted` property with polling timer
+- [X] T009 [P] Implement `PreferencesStore` in `Drawl/Storage/PreferencesStore.swift`: UserDefaults wrapper with properties for `hotkeyKeyCode`, `hotkeyModifiers`, `selectedModelId`, `language`, `indicatorPosition`, `launchAtLogin`, `hasCompletedSetup`, `historyRetentionDays` with defaults per data-model.md
+- [X] T010 [P] Implement `HistoryStore` in `Drawl/Storage/HistoryStore.swift`: SQLite persistence via GRDB.swift for `HistoryEntry` records — insert, fetch (reverse-chronological), search by text content, purge entries older than `historyRetentionDays`, count
+- [X] T011 [P] Define enumerations in `Drawl/App/Models.swift`: `ModelTier` (tiny/base/small with display names and file sizes), `IndicatorPosition` (nearCursor, topRight, topLeft, bottomRight, bottomLeft), `AppState` (idle, listening, processing, setupRequired, modelDownloading, error)
+- [X] T012 [P] Implement `MicrophonePermission` in `Drawl/Permissions/MicrophonePermission.swift`: check authorization status via `AVCaptureDevice.authorizationStatus(for: .audio)`, request access, provide observable `isGranted` property
+- [X] T013 [P] Implement `AccessibilityPermission` in `Drawl/Permissions/AccessibilityPermission.swift`: check via `AXIsProcessTrusted()`, provide `openSystemSettings()` to deep-link to Accessibility pane, provide observable `isGranted` property with polling timer
 
 **Checkpoint**: Foundation ready — preferences persist, history stores/queries, permissions can be checked. User story implementation can now begin.
 
@@ -66,21 +66,21 @@
 
 ### Tests for User Story 1
 
-- [ ] T014 [P] [US1] Write unit test for `HotkeyManager` in `DrawlTests/HotkeyManagerTests.swift`: test registration/unregistration of CGEvent tap, test callback invocation on simulated key-down and key-up events, test hotkey reconfiguration
-- [ ] T015 [P] [US1] Write unit test for `AudioCaptureManager` in `DrawlTests/AudioCaptureTests.swift`: test start/stop capture, test audio format conversion to 16kHz mono Float32, test buffer accumulation using mock audio input
-- [ ] T016 [P] [US1] Write unit test for `WhisperEngine` in `DrawlTests/WhisperEngineTests.swift`: test model loading from file path, test transcription of pre-recorded WAV audio samples, test unload, test `isModelLoaded` state
-- [ ] T017 [P] [US1] Write unit test for `TextInsertionService` in `DrawlTests/TextInsertionTests.swift`: test clipboard save/restore cycle, test paste simulation via CGEvent, test `canInsertIntoFocusedElement()` detection
-- [ ] T018 [P] [US1] Write unit test for `TranscriptionSession` in `DrawlTests/TranscriptionSessionTests.swift`: test session lifecycle (start → segments arrive → end), test finalized segment concatenation, test history entry creation on completion
+- [X] T014 [P] [US1] Write unit test for `HotkeyManager` in `DrawlTests/HotkeyManagerTests.swift`: test registration/unregistration of CGEvent tap, test callback invocation on simulated key-down and key-up events, test hotkey reconfiguration
+- [X] T015 [P] [US1] Write unit test for `AudioCaptureManager` in `DrawlTests/AudioCaptureTests.swift`: test start/stop capture, test audio format conversion to 16kHz mono Float32, test buffer accumulation using mock audio input
+- [X] T016 [P] [US1] Write unit test for `WhisperEngine` in `DrawlTests/WhisperEngineTests.swift`: test model loading from file path, test transcription of pre-recorded WAV audio samples, test unload, test `isModelLoaded` state
+- [X] T017 [P] [US1] Write unit test for `TextInsertionService` in `DrawlTests/TextInsertionTests.swift`: test clipboard save/restore cycle, test paste simulation via CGEvent, test `canInsertIntoFocusedElement()` detection
+- [X] T018 [P] [US1] Write unit test for `TranscriptionSession` in `DrawlTests/TranscriptionSessionTests.swift`: test session lifecycle (start → segments arrive → end), test finalized segment concatenation, test history entry creation on completion
 
 ### Implementation for User Story 1
 
-- [ ] T019 [US1] Implement `HotkeyManager` in `Drawl/Input/HotkeyManager.swift`: CGEvent tap that detects key-down (start dictation) and key-up (stop dictation) for configurable modifier+key combo; consume the event to prevent pass-through; expose `onHotkeyDown` and `onHotkeyUp` callbacks; support re-registration on hotkey change per `HotkeyManagerProtocol` from contracts
-- [ ] T020 [US1] Implement `AudioCaptureManager` in `Drawl/Audio/AudioCaptureManager.swift`: start/stop microphone capture via `AVAudioEngine.inputNode`, convert audio to 16kHz mono Float32 via `AVAudioConverter`, accumulate samples in a ring buffer, expose `onAudioBuffer` callback when segment threshold reached (~5 seconds or silence detected)
-- [ ] T021 [US1] Implement `AudioBufferProcessor` in `Drawl/Audio/AudioBufferProcessor.swift`: silence detection (RMS below threshold for >500ms triggers segment boundary), time-based segmentation (force segment at ~5s), buffer copy and reset for whisper.cpp consumption
-- [ ] T022 [US1] Implement `WhisperEngine` in `Drawl/Transcription/WhisperEngine.swift`: load GGML model file via whisper.cpp C API, run transcription on background thread, return finalized text string, unload model, implement `TranscriptionEngineProtocol` from contracts
-- [ ] T023 [US1] Implement `TextInsertionService` in `Drawl/Input/TextInsertionService.swift`: save current clipboard → set text to `NSPasteboard.general` → simulate ⌘V via `CGEvent` → restore clipboard after 100ms delay; implement `canInsertIntoFocusedElement()` via AXUIElement role check; fallback to clipboard-only with notification per FR-012; implement `TextInsertionServiceProtocol` from contracts
-- [ ] T024 [US1] Implement `TranscriptionSession` in `Drawl/Transcription/TranscriptionSession.swift`: orchestrate full dictation lifecycle — start audio capture on hotkey-down, feed segments to WhisperEngine, insert finalized text via TextInsertionService, stop on hotkey-up, create HistoryEntry and save to HistoryStore on completion
-- [ ] T025 [US1] Implement `AppDelegate` in `Drawl/App/AppDelegate.swift`: wire HotkeyManager, AudioCaptureManager, WhisperEngine, TextInsertionService, and TranscriptionSession together; manage AppState transitions; load model on app launch; handle permission checks before first dictation
+- [X] T019 [US1] Implement `HotkeyManager` in `Drawl/Input/HotkeyManager.swift`: CGEvent tap that detects key-down (start dictation) and key-up (stop dictation) for configurable modifier+key combo; consume the event to prevent pass-through; expose `onHotkeyDown` and `onHotkeyUp` callbacks; support re-registration on hotkey change per `HotkeyManagerProtocol` from contracts
+- [X] T020 [US1] Implement `AudioCaptureManager` in `Drawl/Audio/AudioCaptureManager.swift`: start/stop microphone capture via `AVAudioEngine.inputNode`, convert audio to 16kHz mono Float32 via `AVAudioConverter`, accumulate samples in a ring buffer, expose `onAudioBuffer` callback when segment threshold reached (~5 seconds or silence detected)
+- [X] T021 [US1] Implement `AudioBufferProcessor` in `Drawl/Audio/AudioBufferProcessor.swift`: silence detection (RMS below threshold for >500ms triggers segment boundary), time-based segmentation (force segment at ~5s), buffer copy and reset for whisper.cpp consumption
+- [X] T022 [US1] Implement `WhisperEngine` in `Drawl/Transcription/WhisperEngine.swift`: load GGML model file via whisper.cpp C API, run transcription on background thread, return finalized text string, unload model, implement `TranscriptionEngineProtocol` from contracts
+- [X] T023 [US1] Implement `TextInsertionService` in `Drawl/Input/TextInsertionService.swift`: save current clipboard → set text to `NSPasteboard.general` → simulate ⌘V via `CGEvent` → restore clipboard after 100ms delay; implement `canInsertIntoFocusedElement()` via AXUIElement role check; fallback to clipboard-only with notification per FR-012; implement `TextInsertionServiceProtocol` from contracts
+- [X] T024 [US1] Implement `TranscriptionSession` in `Drawl/Transcription/TranscriptionSession.swift`: orchestrate full dictation lifecycle — start audio capture on hotkey-down, feed segments to WhisperEngine, insert finalized text via TextInsertionService, stop on hotkey-up, create HistoryEntry and save to HistoryStore on completion
+- [X] T025 [US1] Implement `AppDelegate` in `Drawl/App/AppDelegate.swift`: wire HotkeyManager, AudioCaptureManager, WhisperEngine, TextInsertionService, and TranscriptionSession together; manage AppState transitions; load model on app launch; handle permission checks before first dictation
 
 **Checkpoint**: User Story 1 fully functional — hold ⌥+Space in any text field, speak, text appears. Core MVP complete.
 
@@ -134,11 +134,11 @@
 
 ### Tests for User Story 4
 
-- [ ] T034 [P] [US4] Write unit test for `ModelManager` in `DrawlTests/ModelManagerTests.swift`: test `availableModels()` returns 3 tiers, test download to `~/Library/Application Support/Drawl/Models/`, test `localPath()` resolution, test `delete()` removes file, test download progress reporting
+- [X] T034 [P] [US4] Write unit test for `ModelManager` in `DrawlTests/ModelManagerTests.swift`: test `availableModels()` returns 3 tiers, test download to `~/Library/Application Support/Drawl/Models/`, test `localPath()` resolution, test `delete()` removes file, test download progress reporting
 
 ### Implementation for User Story 4
 
-- [ ] T035 [US4] Implement `ModelManager` in `Drawl/Transcription/ModelManager.swift`: define 3 model tiers (tiny/base/small) with Hugging Face CDN download URLs and expected file sizes; download via `URLSession` with progress callback; store models in `~/Library/Application Support/Drawl/Models/`; validate downloaded file integrity (size check); implement `ModelManagerProtocol` from contracts
+- [X] T035 [US4] Implement `ModelManager` in `Drawl/Transcription/ModelManager.swift`: define 3 model tiers (tiny/base/small) with Hugging Face CDN download URLs and expected file sizes; download via `URLSession` with progress callback; store models in `~/Library/Application Support/Drawl/Models/`; validate downloaded file integrity (size check); implement `ModelManagerProtocol` from contracts
 - [ ] T036 [US4] Implement model switching in `Drawl/Transcription/WhisperEngine.swift`: unload current model, load new model from `ModelManager.localPath()`, update `PreferencesStore.selectedModelId`; handle case where selected model is not yet downloaded
 - [ ] T037 [US4] Add model download progress UI to `MenuBarController` in `Drawl/UI/MenuBarController.swift`: show download progress in menu bar dropdown when a model download is in progress; disable dictation until at least one model is downloaded
 

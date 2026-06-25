@@ -1,0 +1,41 @@
+name: Drawl
+options:
+  bundleIdPrefix: com.ben
+targets:
+  Drawl:
+    type: application
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Drawl
+    settings:
+      base:
+        INFOPLIST_FILE: Drawl/App/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Drawl/App/Drawl.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        MACOSX_DEPLOYMENT_TARGET: "13.0"
+    dependencies:
+      - package: Whisper
+        product: whisper
+      - package: GRDB
+        product: GRDB
+  DrawlTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: DrawlTests
+    settings:
+      base:
+        MACOSX_DEPLOYMENT_TARGET: "13.0"
+        GENERATE_INFOPLIST_FILE: true
+    dependencies:
+      - target: Drawl
+
+packages:
+  Whisper:
+    url: https://github.com/ggerganov/whisper.spm
+    branch: master
+  GRDB:
+    url: https://github.com/groue/GRDB.swift
+    from: 6.27.0

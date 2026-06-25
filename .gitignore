@@ -1,0 +1,25 @@
+# OS X
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcworkspace
+!default.xcworkspace
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+
+# Swift Package Manager
+.build/
+Packages/
+.swiftpm/
+
+# App Specific / Local config / Environment / Logs
+*.log
+.env*
