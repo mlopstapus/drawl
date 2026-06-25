@@ -46,9 +46,10 @@ public class IndicatorViewModel: ObservableObject {
     @Published public var pulseOpacity: Double = 0.8
     @Published public var color: Color
 
+    public static let defaultColorHex = "#8B5CF6"
     private var timer: Timer?
 
-    public init(color: Color = Color(hex: "#8B5CF6")) {
+    public init(color: Color = Color(hex: IndicatorViewModel.defaultColorHex)) {
         self.color = color
         startPulseAnimation()
     }
@@ -94,7 +95,7 @@ public class IndicatorViewModel: ObservableObject {
 public class IndicatorWindow: NSPanel {
     public let viewModel: IndicatorViewModel
 
-    public init(color: Color = Color(hex: "#8B5CF6")) {
+    public init(color: Color = Color(hex: IndicatorViewModel.defaultColorHex)) {
         self.viewModel = IndicatorViewModel(color: color)
         super.init(
             contentRect: NSRect(x: 0, y: 0, width: 80, height: 80),

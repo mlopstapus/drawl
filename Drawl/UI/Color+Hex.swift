@@ -13,8 +13,10 @@ extension Color {
         )
     }
 
-    var hexString: String {
-        let ns = NSColor(self).usingColorSpace(.sRGB) ?? .purple
+    public var hexString: String {
+        guard let ns = NSColor(self).usingColorSpace(.sRGB) else {
+            return "#000000"
+        }
         return String(format: "#%02X%02X%02X",
             Int((ns.redComponent * 255).rounded()),
             Int((ns.greenComponent * 255).rounded()),
