@@ -27,7 +27,9 @@ public class WhisperEngine: TranscriptionEngineProtocol {
         if let context = context, !context.isEmpty, let tokenizer = wk.tokenizer {
             let promptTokens = tokenizer.encode(text: " " + context.trimmingCharacters(in: .whitespaces))
                 .filter { $0 < tokenizer.specialTokens.specialTokenBegin }
-            options.promptTokens = promptTokens
+            if !promptTokens.isEmpty {
+                options.promptTokens = promptTokens
+            }
         }
         let results = try await wk.transcribe(audioArray: audioSamples, decodeOptions: options)
         return results.map { $0.text }.joined()
