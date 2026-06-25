@@ -9,6 +9,14 @@ at specs/002-opensource-cicd-setup/plan.md
 Native macOS Swift app (AppKit). No web stack, no Docker, no linter configured (SwiftLint not installed).
 Test scheme: `DrawlTests`. App scheme: `Drawl`. Pass `CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO` for local unsigned builds.
 
+## Deployment target
+
+macOS 14.0 (Sonoma). Raised from 13.0 because `SCScreenshotManager.captureImage` (ScreenCaptureKit) requires macOS 14+. Do not lower without gating `ScreenContextService` behind `@available(macOS 14, *)`.
+
+## Local testing
+
+`bash scripts/create_dmg.sh` (no args) builds Release config and produces `build/Drawl.dmg`. Open, drag to Applications, launch from there.
+
 ## Key conventions
 
 - `/.xcworkspace` is root-anchored in `.gitignore` intentionally — allows `Drawl.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved` to be committed. Do not change to `*.xcworkspace`.
