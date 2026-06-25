@@ -13,7 +13,7 @@ class MockTranscriptionEngine: TranscriptionEngineProtocol {
         loadCount += 1
     }
     
-    func transcribe(audioSamples: [Float], sampleRate: Int) async throws -> String {
+    func transcribe(audioSamples: [Float], sampleRate: Int, context: String?) async throws -> String {
         transcribeCount += 1
         return mockResultText
     }

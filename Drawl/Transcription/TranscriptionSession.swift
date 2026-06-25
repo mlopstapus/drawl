@@ -77,7 +77,7 @@ public class TranscriptionSession {
     
     private func transcribeAndInsert(_ samples: [Float]) async {
         do {
-            let transcribed = try await engine.transcribe(audioSamples: samples, sampleRate: 16000)
+            let transcribed = try await engine.transcribe(audioSamples: samples, sampleRate: 16000, context: nil)
             let trimmed = transcribed.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !trimmed.isEmpty else { return }
             

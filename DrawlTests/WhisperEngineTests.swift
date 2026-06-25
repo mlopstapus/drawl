@@ -18,7 +18,7 @@ final class WhisperEngineTests: XCTestCase {
         XCTAssertFalse(engine.isModelLoaded)
         
         do {
-            _ = try await engine.transcribe(audioSamples: [0.0], sampleRate: 16000)
+            _ = try await engine.transcribe(audioSamples: [0.0], sampleRate: 16000, context: nil)
             XCTFail("Should have failed to transcribe without model loaded")
         } catch {
             // Expected error

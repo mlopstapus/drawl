@@ -2,7 +2,7 @@ import Foundation
 
 public protocol TranscriptionEngineProtocol {
     func loadModel(at path: URL) async throws
-    func transcribe(audioSamples: [Float], sampleRate: Int) async throws -> String
+    func transcribe(audioSamples: [Float], sampleRate: Int, context: String?) async throws -> String
     func unloadModel()
     var isModelLoaded: Bool { get }
 }
