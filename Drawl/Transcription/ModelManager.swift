@@ -43,7 +43,7 @@ public class ModelManager: ModelManagerProtocol {
         let record = pathRecordURL(for: model.tier)
         guard let savedPath = try? String(contentsOf: record, encoding: .utf8),
               !savedPath.isEmpty else { return nil }
-        let url = URL(fileURLWithPath: savedPath)
+        let url = URL(fileURLWithPath: savedPath, isDirectory: false)
         guard fileManager.fileExists(atPath: savedPath) else {
             try? fileManager.removeItem(at: record)
             return nil

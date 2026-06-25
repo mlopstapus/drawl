@@ -1,0 +1,11 @@
+[extend]
+# Extend the default gitleaks config
+useDefault = true
+
+[allowlist]
+description = "Ignore gitignored build artifacts and SPM dependency sources"
+paths = [
+  '''build/''',
+  '''DerivedData/''',
+  '''.build/''',
+]
