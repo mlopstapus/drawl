@@ -28,9 +28,12 @@ open class ScreenContextService {
             )
 
             let rawText = try await recognizeText(in: image)
+            NSLog("[ScreenContext] raw OCR (%d chars): %@", rawText.count, String(rawText.prefix(300)))
             let filtered = filterWords(from: rawText)
+            NSLog("[ScreenContext] filtered words: %@", filtered.isEmpty ? "(none)" : filtered)
             return filtered.isEmpty ? nil : filtered
         } catch {
+            NSLog("[ScreenContext] capture failed: %@", error.localizedDescription)
             return nil
         }
     }

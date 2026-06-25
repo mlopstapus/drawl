@@ -120,7 +120,7 @@ public class IndicatorWindow: NSPanel {
         DispatchQueue.main.async {
             self.updatePosition(for: position)
             self.alphaValue = 0.0
-            self.makeKeyAndOrderFront(nil)
+            self.orderFront(nil)
             NSAnimationContext.runAnimationGroup { context in
                 context.duration = 0.2
                 context.timingFunction = CAMediaTimingFunction(name: .easeIn)
