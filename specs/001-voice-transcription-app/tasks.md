@@ -114,13 +114,13 @@
 
 ### Tests for User Story 3
 
-- [ ] T030 [P] [US3] Write unit test for `IndicatorWindow` in `DrawlTests/IndicatorWindowTests.swift`: test show/hide transitions, test positioning options (nearCursor, fixed corners), test window level is floating, test click-through behavior
+- [X] T030 [P] [US3] Write unit test for `IndicatorWindow` in `DrawlTests/IndicatorWindowTests.swift`: test show/hide transitions, test positioning options (nearCursor, fixed corners), test window level is floating, test click-through behavior
 
 ### Implementation for User Story 3
 
-- [ ] T031 [US3] Implement `IndicatorWindow` in `Drawl/UI/IndicatorWindow.swift`: borderless `NSPanel` at `.floating` level, 48×48pt, transparent background, click-through (`ignoresMouseEvents = true`), not shown in Mission Control; show with 200ms fade-in, hide with 300ms fade-out; position based on `IndicatorPosition` preference (near cursor via `NSEvent.mouseLocation` or fixed screen corner)
-- [ ] T032 [US3] Implement indicator animation in `Drawl/UI/IndicatorWindow.swift`: idle pulse animation (opacity 0.6–1.0, 1.5s cycle) when listening but no audio; audio-reactive animation (scale/pulse intensity based on RMS audio level) when voice detected; use `CABasicAnimation` or `NSAnimationContext`
-- [ ] T033 [US3] Wire `IndicatorWindow` into `TranscriptionSession` in `Drawl/Transcription/TranscriptionSession.swift`: show indicator on hotkey-down, update animation intensity from `AudioCaptureManager` audio level callback, hide indicator on hotkey-up
+- [X] T031 [US3] Implement `IndicatorWindow` in `Drawl/UI/IndicatorWindow.swift`: borderless `NSPanel` at `.floating` level, 48×48pt, transparent background, click-through (`ignoresMouseEvents = true`), not shown in Mission Control; show with 200ms fade-in, hide with 300ms fade-out; position based on `IndicatorPosition` preference (near cursor via `NSEvent.mouseLocation` or fixed screen corner)
+- [X] T032 [US3] Implement indicator animation in `Drawl/UI/IndicatorWindow.swift`: idle pulse animation (opacity 0.6–1.0, 1.5s cycle) when listening but no audio; audio-reactive animation (scale/pulse intensity based on RMS audio level) when voice detected; use `CABasicAnimation` or `NSAnimationContext`
+- [X] T033 [US3] Wire `IndicatorWindow` into `TranscriptionSession` in `Drawl/Transcription/TranscriptionSession.swift`: show indicator on hotkey-down, update animation intensity from `AudioCaptureManager` audio level callback, hide indicator on hotkey-up
 
 **Checkpoint**: Visual indicator visible during dictation, animates with audio, respects position preference.
 
@@ -139,8 +139,8 @@
 ### Implementation for User Story 4
 
 - [X] T035 [US4] Implement `ModelManager` in `Drawl/Transcription/ModelManager.swift`: define 3 model tiers (tiny/base/small) with Hugging Face CDN download URLs and expected file sizes; download via `URLSession` with progress callback; store models in `~/Library/Application Support/Drawl/Models/`; validate downloaded file integrity (size check); implement `ModelManagerProtocol` from contracts
-- [ ] T036 [US4] Implement model switching in `Drawl/Transcription/WhisperEngine.swift`: unload current model, load new model from `ModelManager.localPath()`, update `PreferencesStore.selectedModelId`; handle case where selected model is not yet downloaded
-- [ ] T037 [US4] Add model download progress UI to `MenuBarController` in `Drawl/UI/MenuBarController.swift`: show download progress in menu bar dropdown when a model download is in progress; disable dictation until at least one model is downloaded
+- [X] T036 [US4] Implement model switching in `Drawl/Transcription/WhisperEngine.swift`: unload current model, load new model from `ModelManager.localPath()`, update `PreferencesStore.selectedModelId`; handle case where selected model is not yet downloaded
+- [X] T037 [US4] Add model download progress UI to `MenuBarController` in `Drawl/UI/MenuBarController.swift`: show download progress in menu bar dropdown when a model download is in progress; disable dictation until at least one model is downloaded
 
 **Checkpoint**: Multiple model tiers available, download/switch works, transcription fully offline.
 
@@ -154,13 +154,13 @@
 
 ### Tests for User Story 5
 
-- [ ] T038 [P] [US5] Write unit test for preferences binding in `DrawlTests/PreferencesStoreTests.swift`: test that changing hotkey in preferences triggers `HotkeyManager.register()` with new key code and modifiers
+- [X] T038 [P] [US5] Write unit test for preferences binding in `DrawlTests/PreferencesStoreTests.swift`: test that changing hotkey in preferences triggers `HotkeyManager.register()` with new key code and modifiers
 
 ### Implementation for User Story 5
 
-- [ ] T039 [US5] Implement `PreferencesView` in `Drawl/UI/PreferencesView.swift`: macOS Settings window (SwiftUI or AppKit `NSWindow`) with sections per preferences contract — hotkey recorder (capture next key combination), model dropdown (with download status per tier), language dropdown (English only for v1, architecture for more), indicator position segmented control, launch-at-login toggle
-- [ ] T040 [US5] Implement hotkey recorder in `PreferencesView`: custom control that enters "recording" mode on click, captures next key-down event (key code + modifiers), displays human-readable shortcut string (e.g., "⌥Space"), saves to `PreferencesStore`, triggers `HotkeyManager.unregister()` + `register()` with new binding immediately (per SC-007)
-- [ ] T041 [US5] Wire model selection in `PreferencesView` to `ModelManager` and `WhisperEngine`: dropdown shows all tiers with download status (downloaded/not), selecting a non-downloaded model triggers download with progress, selecting a downloaded model switches the active model in `WhisperEngine`
+- [X] T039 [US5] Implement `PreferencesView` in `Drawl/UI/PreferencesView.swift`: macOS Settings window (SwiftUI or AppKit `NSWindow`) with sections per preferences contract — hotkey recorder (capture next key combination), model dropdown (with download status per tier), language dropdown (English only for v1, architecture for more), indicator position segmented control, launch-at-login toggle
+- [X] T040 [US5] Implement hotkey recorder in `PreferencesView`: custom control that enters "recording" mode on click, captures next key-down event (key code + modifiers), displays human-readable shortcut string (e.g., "⌥Space"), saves to `PreferencesStore`, triggers `HotkeyManager.unregister()` + `register()` with new binding immediately (per SC-007)
+- [X] T041 [US5] Wire model selection in `PreferencesView` to `ModelManager` and `WhisperEngine`: dropdown shows all tiers with download status (downloaded/not), selecting a non-downloaded model triggers download with progress, selecting a downloaded model switches the active model in `WhisperEngine`
 
 **Checkpoint**: All preferences configurable, hotkey changes take effect immediately, model switching works.
 
@@ -174,13 +174,13 @@
 
 ### Tests for User Story 6
 
-- [ ] T042 [P] [US6] Write unit test for history display in `DrawlTests/HistoryStoreTests.swift`: test 30-day purge on fetch, test search filtering, test empty state
+- [X] T042 [P] [US6] Write unit test for history display in `DrawlTests/HistoryStoreTests.swift`: test 30-day purge on fetch, test search filtering, test empty state
 
 ### Implementation for User Story 6
 
-- [ ] T043 [US6] Implement `HistoryView` in `Drawl/UI/HistoryView.swift`: SwiftUI or AppKit window showing transcription entries in reverse-chronological list grouped by date; each entry shows truncated text (first 100 chars), timestamp, source app name, duration; per-entry copy button that copies full text to `NSPasteboard.general`; search bar for case-insensitive text filtering; empty state message per history contract
-- [ ] T044 [US6] Implement 30-day auto-cleanup in `Drawl/Storage/HistoryStore.swift`: on app launch and on `HistoryView` open, call `purgeOldEntries()` to delete records where `timestamp` is older than `PreferencesStore.historyRetentionDays`
-- [ ] T045 [US6] Wire History menu item in `MenuBarController` to open `HistoryView` window
+- [X] T043 [US6] Implement `HistoryView` in `Drawl/UI/HistoryView.swift`: SwiftUI or AppKit window showing transcription entries in reverse-chronological list grouped by date; each entry shows truncated text (first 100 chars), timestamp, source app name, duration; per-entry copy button that copies full text to `NSPasteboard.general`; search bar for case-insensitive text filtering; empty state message per history contract
+- [X] T044 [US6] Implement 30-day auto-cleanup in `Drawl/Storage/HistoryStore.swift`: on app launch and on `HistoryView` open, call `purgeOldEntries()` to delete records where `timestamp` is older than `PreferencesStore.historyRetentionDays`
+- [X] T045 [US6] Wire History menu item in `MenuBarController` to open `HistoryView` window
 
 **Checkpoint**: History browsable, searchable, copy works, old entries auto-purged.
 
@@ -194,13 +194,13 @@
 
 ### Tests for Setup Wizard
 
-- [ ] T046 [P] [US-Setup] Write unit test for setup flow in `DrawlTests/SetupWizardTests.swift`: test step progression (cannot advance without permission granted), test model download step triggers `ModelManager.download()`, test `hasCompletedSetup` set to true on completion
+- [X] T046 [P] [US-Setup] Write unit test for setup flow in `DrawlTests/SetupWizardTests.swift`: test step progression (cannot advance without permission granted), test model download step triggers `ModelManager.download()`, test `hasCompletedSetup` set to true on completion
 
 ### Implementation for Setup Wizard
 
-- [ ] T047 [US-Setup] Implement `SetupWizardView` in `Drawl/UI/SetupWizardView.swift`: 3-step sequential wizard per setup wizard contract — Step 1: Microphone permission (explanation + "Grant Access" button triggering `AVCaptureDevice.requestAccess`, poll for `isGranted`); Step 2: Accessibility permission (explanation + "Open System Settings" button linking to Accessibility pane, poll `AXIsProcessTrusted()` every 1s); Step 3: Model selection (tier picker + download with progress bar)
-- [ ] T048 [US-Setup] Wire setup wizard into app launch in `Drawl/App/AppDelegate.swift`: on launch, check `PreferencesStore.hasCompletedSetup`; if false, show `SetupWizardView` as modal; on completion, set `hasCompletedSetup = true`, load selected model, transition to idle state
-- [ ] T049 [US-Setup] Add "Re-run Setup" option accessible from error alerts (when permissions are missing) and Preferences menu
+- [X] T047 [US-Setup] Implement `SetupWizardView` in `Drawl/UI/SetupWizardView.swift`: 3-step sequential wizard per setup wizard contract — Step 1: Microphone permission (explanation + "Grant Access" button triggering `AVCaptureDevice.requestAccess`, poll for `isGranted`); Step 2: Accessibility permission (explanation + "Open System Settings" button linking to Accessibility pane, poll `AXIsProcessTrusted()` every 1s); Step 3: Model selection (tier picker + download with progress bar)
+- [X] T048 [US-Setup] Wire setup wizard into app launch in `Drawl/App/AppDelegate.swift`: on launch, check `PreferencesStore.hasCompletedSetup`; if false, show `SetupWizardView` as modal; on completion, set `hasCompletedSetup = true`, load selected model, transition to idle state
+- [X] T049 [US-Setup] Add "Re-run Setup" option accessible from error alerts (when permissions are missing) and Preferences menu
 
 **Checkpoint**: First-run experience complete — new users guided through all required setup before first dictation.
 

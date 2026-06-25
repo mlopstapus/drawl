@@ -23,11 +23,16 @@ public class ModelManager: ModelManagerProtocol {
     public func download(model: SpeechModel, progress: @escaping (Float) -> Void) async throws {
         let destinationURL = expectedPath(for: model.tier)
         
-        let (tempURL, response) = try await URLSession.shared.download(from: model.downloadURL)
+        let delegate = DownloadDelegate(progress: progress)
+        let session = URLSession(configuration: .default, delegate: delegate, delegateQueue: nil)
         
-        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-            throw AppError.modelDownloadFailed("Server returned error status")
+        let tempURL: URL = try await withCheckedThrowingContinuation { continuation in
+            let task = session.downloadTask(with: model.downloadURL)
+            delegate.continuation = continuation
+            task.resume()
         }
+        
+        session.finishTasksAndInvalidate()
         
         if fileManager.fileExists(atPath: destinationURL.path) {
             try fileManager.removeItem(at: destinationURL)
@@ -49,5 +54,32 @@ public class ModelManager: ModelManagerProtocol {
     
     private func expectedPath(for tier: ModelTier) -> URL {
         return modelsDirectory.appendingPathComponent(tier.fileName)
+    }
+}
+
+private class DownloadDelegate: NSObject, URLSessionDownloadDelegate {
+    let progress: (Float) -> Void
+    var continuation: CheckedContinuation<URL, Error>?
+    
+    init(progress: @escaping (Float) -> Void) {
+        self.progress = progress
+    }
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        guard totalBytesExpectedToWrite > 0 else { return }
+        let pct = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
+        progress(pct)
+    }
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        continuation?.resume(returning: location)
+        continuation = nil
+    }
+    
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        if let error = error {
+            continuation?.resume(throwing: error)
+            continuation = nil
+        }
     }
 }

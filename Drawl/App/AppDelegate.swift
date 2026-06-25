@@ -2,6 +2,7 @@ import AppKit
 import Combine
 import AVFoundation
 import ServiceManagement
+import SwiftUI
 
 public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     @Published public var appState: AppState = .setupRequired
@@ -19,6 +20,11 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     private var menuBarController: MenuBarController?
     private var indicatorWindow: IndicatorWindow?
     private var cancellables = Set<AnyCancellable>()
+    public var loadedModelTier: ModelTier?
+    
+    private var setupWizardWindow: NSWindow?
+    private var preferencesWindow: NSWindow?
+    private var historyWindow: NSWindow?
     
     public func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -33,6 +39,14 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         
         self.menuBarController = MenuBarController(appDelegate: self)
         updateLaunchAtLogin(enabled: preferencesStore.launchAtLogin)
+        
+        preferencesStore.objectWillChange
+            .sink { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.preferencesChanged()
+                }
+            }
+            .store(in: &cancellables)
         
         audioCaptureManager.onAudioBuffer = { [weak self] samples in
             guard let self = self else { return }
@@ -53,6 +67,38 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
             self?.stopDictation()
         }
         
+        NotificationCenter.default.publisher(for: .openSetupWizardWindow)
+            .sink { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.showSetupWizardWindow()
+                }
+            }
+            .store(in: &cancellables)
+        
+        NotificationCenter.default.publisher(for: .closeSetupWizardWindow)
+            .sink { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.closeSetupWizardWindow()
+                }
+            }
+            .store(in: &cancellables)
+            
+        NotificationCenter.default.publisher(for: .openPreferencesWindow)
+            .sink { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.showPreferencesWindow()
+                }
+            }
+            .store(in: &cancellables)
+            
+        NotificationCenter.default.publisher(for: .openHistoryWindow)
+            .sink { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.showHistoryWindow()
+                }
+            }
+            .store(in: &cancellables)
+        
         checkSetupAndInitialize()
     }
     
@@ -68,12 +114,57 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         if !hasMic || !hasAccessibility || !hasModel {
             self.appState = .setupRequired
             preferencesStore.hasCompletedSetup = false
+            DispatchQueue.main.async {
+                self.showSetupWizardWindow()
+            }
             return
         }
         
         preferencesStore.hasCompletedSetup = true
         Task {
             await loadActiveModelAndRegisterHotkey(tier: selectedModelTier)
+        }
+    }
+    
+    public func downloadModel(tier: ModelTier) {
+        let model = SpeechModel(tier: tier)
+        Task {
+            do {
+                DispatchQueue.main.async {
+                    self.appState = .modelDownloading(progress: 0.0)
+                }
+                try await modelManager.download(model: model) { [weak self] progress in
+                    DispatchQueue.main.async {
+                        self?.appState = .modelDownloading(progress: progress)
+                    }
+                }
+                
+                // Once downloaded, let's load it and transition to idle
+                await loadActiveModelAndRegisterHotkey(tier: tier)
+                checkSetupAndInitialize()
+            } catch {
+                DispatchQueue.main.async {
+                    self.appState = .error(.modelDownloadFailed(error.localizedDescription))
+                }
+            }
+        }
+    }
+    
+    public func preferencesChanged() {
+        registerHotkey()
+        updateLaunchAtLogin(enabled: preferencesStore.launchAtLogin)
+        
+        let selectedModelTier = ModelTier.allCases.first { $0.id == preferencesStore.selectedModelId } ?? .base
+        if loadedModelTier != selectedModelTier {
+            let model = SpeechModel(tier: selectedModelTier)
+            if modelManager.localPath(for: model) != nil {
+                Task {
+                    await loadActiveModelAndRegisterHotkey(tier: selectedModelTier)
+                }
+            } else {
+                self.appState = .setupRequired
+                preferencesStore.hasCompletedSetup = false
+            }
         }
     }
     
@@ -92,6 +183,7 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
             try await whisperEngine.loadModel(at: modelPath)
             
             DispatchQueue.main.async {
+                self.loadedModelTier = tier
                 self.appState = .idle
                 self.registerHotkey()
             }
@@ -190,5 +282,89 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
                 }
             }
         }
+    }
+    
+    public func showSetupWizardWindow() {
+        guard NSClassFromString("XCTestCase") == nil else { return }
+        if let window = setupWizardWindow {
+            window.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
+        }
+        
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 550, height: 480),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+        window.title = "Drawl Setup Wizard"
+        window.center()
+        window.isReleasedWhenClosed = false
+        
+        let hostingView = NSHostingView(rootView: SetupWizardView(appDelegate: self))
+        window.contentView = hostingView
+        
+        self.setupWizardWindow = window
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+    
+    public func closeSetupWizardWindow() {
+        setupWizardWindow?.close()
+        setupWizardWindow = nil
+    }
+    
+    public func showPreferencesWindow() {
+        guard NSClassFromString("XCTestCase") == nil else { return }
+        if let window = preferencesWindow {
+            window.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
+        }
+        
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 480, height: 580),
+            styleMask: [.titled, .closable, .miniaturizable],
+            backing: .buffered,
+            defer: false
+        )
+        window.title = "Drawl Preferences"
+        window.center()
+        window.isReleasedWhenClosed = false
+        
+        let hostingView = NSHostingView(rootView: PreferencesView(appDelegate: self))
+        window.contentView = hostingView
+        
+        self.preferencesWindow = window
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+    
+    public func showHistoryWindow() {
+        guard NSClassFromString("XCTestCase") == nil else { return }
+        if let window = historyWindow {
+            window.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
+        }
+        
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 500, height: 600),
+            styleMask: [.titled, .closable, .miniaturizable, .resizable],
+            backing: .buffered,
+            defer: false
+        )
+        window.title = "Drawl Transcription History"
+        window.center()
+        window.isReleasedWhenClosed = false
+        
+        let viewModel = HistoryViewModel(store: historyStore, preferencesStore: preferencesStore)
+        let hostingView = NSHostingView(rootView: HistoryView(viewModel: viewModel))
+        window.contentView = hostingView
+        
+        self.historyWindow = window
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
     }
 }
