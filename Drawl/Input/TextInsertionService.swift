@@ -31,23 +31,15 @@ public class TextInsertionService: TextInsertionServiceProtocol {
     
     public func insertText(_ text: String) async throws {
         guard !text.isEmpty else { return }
-        
-        let canInsert = canInsertIntoFocusedElement()
-        
-        if !canInsert {
-            NSPasteboard.general.clearContents()
-            NSPasteboard.general.setString(text, forType: .string)
-            throw AppError.transcriptionFailed("No focused text field. Copied transcription to clipboard.")
-        }
-        
+
         let savedItems = saveClipboard()
-        
+
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(text, forType: .string)
-        
+
         simulatePaste()
-        
-        try? await Task.sleep(nanoseconds: 100_000_000) // 100ms
+
+        try? await Task.sleep(nanoseconds: 100_000_000)
         restoreClipboard(savedItems)
     }
     
