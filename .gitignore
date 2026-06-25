@@ -9,7 +9,7 @@ build/
 DerivedData/
 *.xcuserstate
 xcuserdata/
-*.xcworkspace
+/*.xcworkspace
 !default.xcworkspace
 *.moved-aside
 *.xccheckout
@@ -22,4 +22,11 @@ Packages/
 
 # App Specific / Local config / Environment / Logs
 *.log
+*.profraw
 .env*
+
+# AI / developer tooling (not relevant to contributors)
+.claude/
+.agents/
+.specify/
+context/

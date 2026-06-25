@@ -21,7 +21,7 @@ final class PreferencesStoreTests: XCTestCase {
         
         XCTAssertEqual(store.hotkeyKeyCode, 55)
         XCTAssertEqual(store.hotkeyModifiers, 1048576) // ⌘ (Command) modifier value
-        XCTAssertEqual(store.selectedModelId, "ggml-base")
+        XCTAssertEqual(store.selectedModelId, "base")
         XCTAssertEqual(store.language, "en")
         XCTAssertEqual(store.indicatorPosition, .nearCursor)
         XCTAssertFalse(store.launchAtLogin)
@@ -46,14 +46,14 @@ final class PreferencesStoreTests: XCTestCase {
     func testReadWriteModelAndOtherSettings() {
         let store = PreferencesStore(defaults: userDefaultsSuite)
         
-        store.selectedModelId = "ggml-tiny"
+        store.selectedModelId = "tiny"
         store.language = "es"
         store.indicatorPosition = .topRight
         store.launchAtLogin = true
         store.hasCompletedSetup = true
         store.historyRetentionDays = 15
         
-        XCTAssertEqual(store.selectedModelId, "ggml-tiny")
+        XCTAssertEqual(store.selectedModelId, "tiny")
         XCTAssertEqual(store.language, "es")
         XCTAssertEqual(store.indicatorPosition, .topRight)
         XCTAssertTrue(store.launchAtLogin)
@@ -61,7 +61,7 @@ final class PreferencesStoreTests: XCTestCase {
         XCTAssertEqual(store.historyRetentionDays, 15)
         
         let anotherStore = PreferencesStore(defaults: userDefaultsSuite)
-        XCTAssertEqual(anotherStore.selectedModelId, "ggml-tiny")
+        XCTAssertEqual(anotherStore.selectedModelId, "tiny")
         XCTAssertEqual(anotherStore.language, "es")
         XCTAssertEqual(anotherStore.indicatorPosition, .topRight)
         XCTAssertTrue(anotherStore.launchAtLogin)

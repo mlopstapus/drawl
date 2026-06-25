@@ -7,7 +7,7 @@ final class WhisperEngineTests: XCTestCase {
         
         XCTAssertFalse(engine.isModelLoaded)
         
-        let nonexistentURL = URL(fileURLWithPath: "/path/to/nonexistent/model.bin")
+        let nonexistentURL = URL(fileURLWithPath: "/path/to/nonexistent/model-folder")
         do {
             try await engine.loadModel(at: nonexistentURL)
             XCTFail("Should have failed to load nonexistent model file")

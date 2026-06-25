@@ -12,6 +12,7 @@ public class TranscriptionSession {
     private var sessionText: String = ""
     private var segmentCount = 0
     private var sourceAppName: String?
+    private var lastTranscriptionTask: Task<Void, Never>?
     
     public init(
         engine: TranscriptionEngineProtocol,
@@ -30,7 +31,7 @@ public class TranscriptionSession {
     private func setupBufferProcessor() {
         bufferProcessor.onSegmentReady = { [weak self] samples in
             guard let self = self else { return }
-            Task {
+            self.lastTranscriptionTask = Task {
                 await self.transcribeAndInsert(samples)
             }
         }
@@ -48,9 +49,8 @@ public class TranscriptionSession {
     
     public func stop() async {
         bufferProcessor.flush()
-        
-        try? await Task.sleep(nanoseconds: 100_000_000)
-        
+        await lastTranscriptionTask?.value
+
         guard let start = startTime, !sessionText.isEmpty else { return }
         
         let end = Date()

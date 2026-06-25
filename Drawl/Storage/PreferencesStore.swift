@@ -69,7 +69,7 @@ public class PreferencesStore: ObservableObject {
         defaults.register(defaults: [
             Keys.hotkeyKeyCode: 55, // Command
             Keys.hotkeyModifiers: 1048576, // ⌘ (Command) modifier value
-            Keys.selectedModelId: "ggml-base",
+            Keys.selectedModelId: "base",
             Keys.language: "en",
             Keys.indicatorPosition: IndicatorPosition.nearCursor.rawValue,
             Keys.launchAtLogin: false,
@@ -80,7 +80,7 @@ public class PreferencesStore: ObservableObject {
         // Load initial values from defaults
         self.hotkeyKeyCode = UInt16(defaults.integer(forKey: Keys.hotkeyKeyCode))
         self.hotkeyModifiers = UInt64(defaults.double(forKey: Keys.hotkeyModifiers))
-        self.selectedModelId = defaults.string(forKey: Keys.selectedModelId) ?? "ggml-base"
+        self.selectedModelId = defaults.string(forKey: Keys.selectedModelId) ?? "base"
         self.language = defaults.string(forKey: Keys.language) ?? "en"
         
         let rawPos = defaults.string(forKey: Keys.indicatorPosition) ?? IndicatorPosition.nearCursor.rawValue

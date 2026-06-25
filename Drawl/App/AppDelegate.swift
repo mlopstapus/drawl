@@ -181,11 +181,8 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         }
         
         do {
-            DispatchQueue.main.async {
-                self.appState = .modelDownloading(progress: 0.0)
-            }
             try await whisperEngine.loadModel(at: modelPath)
-            
+
             DispatchQueue.main.async {
                 self.loadedModelTier = tier
                 self.appState = .idle
@@ -314,8 +311,8 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         }
         
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 550, height: 520),
-            styleMask: [.titled, .closable, .resizable],
+            contentRect: NSRect(x: 0, y: 0, width: 550, height: 620),
+            styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
         )
