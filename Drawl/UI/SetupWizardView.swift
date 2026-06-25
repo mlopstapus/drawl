@@ -42,18 +42,16 @@ struct SetupWizardView: View {
             Divider()
             
             // Step Content
-            ScrollView {
-                VStack {
-                    if currentStep == 1 {
-                        microphoneStep
-                    } else if currentStep == 2 {
-                        accessibilityStep
-                    } else {
-                        modelSetupStep
-                    }
+            VStack {
+                if currentStep == 1 {
+                    microphoneStep
+                } else if currentStep == 2 {
+                    accessibilityStep
+                } else {
+                    modelSetupStep
                 }
-                .padding()
             }
+            .padding()
             .frame(maxHeight: .infinity)
             
             Divider()
@@ -111,7 +109,7 @@ struct SetupWizardView: View {
             .padding()
             .background(Color(NSColor.windowBackgroundColor).opacity(0.3))
         }
-        .frame(width: 550, height: 520)
+        .frame(width: 550, height: 620)
         .background(
             VisualEffectView(material: .hudWindow, blendingMode: .behindWindow)
                 .edgesIgnoringSafeArea(.all)

@@ -311,8 +311,8 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         }
         
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 550, height: 520),
-            styleMask: [.titled, .closable, .resizable],
+            contentRect: NSRect(x: 0, y: 0, width: 550, height: 620),
+            styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
         )
