@@ -16,7 +16,7 @@
 		294F8DF511E073C333838570 /* TranscriptionSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF5B05419CA9C6FCBD220F0 /* TranscriptionSessionTests.swift */; };
 		310CA58683D8CBE3216CC479 /* IndicatorWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A39E4191D599303D9321F6 /* IndicatorWindow.swift */; };
 		32D1B44DC9585918487EA670 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C9540ED5F1EA16E0A189B0 /* AppDelegate.swift */; };
-		3D3D8C4971C64855C86B82EA /* whisper in Frameworks */ = {isa = PBXBuildFile; productRef = A1500002DCB98122B730604C /* whisper */; };
+		3D3D8C4971C64855C86B82EA /* WhisperKit in Frameworks */ = {isa = PBXBuildFile; productRef = A1500002DCB98122B730604C /* WhisperKit */; };
 		3E269E0471C75E4ADB10A613 /* HistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE95BD9ED7BEB993738B524B /* HistoryStore.swift */; };
 		57BE90ED071C043B8DA0CA70 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 939D9F682008C2FD8A14712E /* Models.swift */; };
 		5B11C2FA83578CA61FC480DD /* HotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6A4F8F22A77AAE0DF0E054 /* HotkeyManager.swift */; };
@@ -97,7 +97,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3D3D8C4971C64855C86B82EA /* whisper in Frameworks */,
+				3D3D8C4971C64855C86B82EA /* WhisperKit in Frameworks */,
 				9CEA647205EADB219B300FEF /* GRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -270,7 +270,7 @@
 			);
 			name = Drawl;
 			packageProductDependencies = (
-				A1500002DCB98122B730604C /* whisper */,
+				A1500002DCB98122B730604C /* WhisperKit */,
 				6B6AF3D4A27466AD8892C891 /* GRDB */,
 			);
 			productName = Drawl;
@@ -299,7 +299,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				6B413C64E992A8281165262F /* XCRemoteSwiftPackageReference "GRDB.swift" */,
-				60C8552D5D42FADB9B2A43C9 /* XCRemoteSwiftPackageReference "whisper.spm" */,
+				60C8552D5D42FADB9B2A43C9 /* XCRemoteSwiftPackageReference "WhisperKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1762DC6312A0D2DDFA5CA0F7 /* Products */;
@@ -391,7 +391,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ben.Drawl;
 				SDKROOT = macosx;
 			};
@@ -525,7 +525,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ben.Drawl;
 				SDKROOT = macosx;
 			};
@@ -542,7 +542,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ben.DrawlTests;
 				SDKROOT = macosx;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Drawl.app/Contents/MacOS/Drawl";
@@ -560,7 +560,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ben.DrawlTests;
 				SDKROOT = macosx;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Drawl.app/Contents/MacOS/Drawl";
@@ -600,11 +600,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		60C8552D5D42FADB9B2A43C9 /* XCRemoteSwiftPackageReference "whisper.spm" */ = {
+		60C8552D5D42FADB9B2A43C9 /* XCRemoteSwiftPackageReference "WhisperKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ggerganov/whisper.spm";
+			repositoryURL = "https://github.com/argmaxinc/WhisperKit";
 			requirement = {
-				branch = master;
+				branch = main;
 				kind = branch;
 			};
 		};
@@ -624,10 +624,10 @@
 			package = 6B413C64E992A8281165262F /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
 		};
-		A1500002DCB98122B730604C /* whisper */ = {
+		A1500002DCB98122B730604C /* WhisperKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 60C8552D5D42FADB9B2A43C9 /* XCRemoteSwiftPackageReference "whisper.spm" */;
-			productName = whisper;
+			package = 60C8552D5D42FADB9B2A43C9 /* XCRemoteSwiftPackageReference "WhisperKit" */;
+			productName = WhisperKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
