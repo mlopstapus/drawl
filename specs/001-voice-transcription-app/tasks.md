@@ -94,13 +94,13 @@
 
 ### Tests for User Story 2
 
-- [ ] T026 [P] [US2] Write unit test for `MenuBarController` in `DrawlTests/MenuBarControllerTests.swift`: test menu items present (status, preferences, history, quit), test status label updates based on AppState changes
+- [X] T026 [P] [US2] Write unit test for `MenuBarController` in `DrawlTests/MenuBarControllerTests.swift`: test menu items present (status, preferences, history, quit), test status label updates based on AppState changes
 
 ### Implementation for User Story 2
 
-- [ ] T027 [US2] Implement `MenuBarController` in `Drawl/UI/MenuBarController.swift`: create `NSStatusItem` with system symbol icon, build `NSMenu` with items per menu bar contract (status label, separator, Start/Stop toggle, Transcription History, separator, Preferences…, Quit Drawl), update status label reactively based on AppState
-- [ ] T028 [US2] Wire `MenuBarController` into `AppDelegate` in `Drawl/App/AppDelegate.swift`: initialize on app launch, connect menu actions to TranscriptionSession start/stop, Preferences window, History window, and `NSApp.terminate`
-- [ ] T029 [US2] Implement Launch at Login in `Drawl/App/AppDelegate.swift`: use `ServiceManagement.SMAppService.mainApp` to register/unregister launch-at-login based on `PreferencesStore.launchAtLogin` preference
+- [X] T027 [US2] Implement `MenuBarController` in `Drawl/UI/MenuBarController.swift`: create `NSStatusItem` with system symbol icon, build `NSMenu` with items per menu bar contract (status label, separator, Start/Stop toggle, Transcription History, separator, Preferences…, Quit Drawl), update status label reactively based on AppState
+- [X] T028 [US2] Wire `MenuBarController` into `AppDelegate` in `Drawl/App/AppDelegate.swift`: initialize on app launch, connect menu actions to TranscriptionSession start/stop, Preferences window, History window, and `NSApp.terminate`
+- [X] T029 [US2] Implement Launch at Login in `Drawl/App/AppDelegate.swift`: use `ServiceManagement.SMAppService.mainApp` to register/unregister launch-at-login based on `PreferencesStore.launchAtLogin` preference
 
 **Checkpoint**: App runs in menu bar, dropdown works, status updates in real-time, Launch at Login configurable.
 

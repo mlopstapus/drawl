@@ -1,6 +1,7 @@
 import AppKit
 import Combine
 import AVFoundation
+import ServiceManagement
 
 public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     @Published public var appState: AppState = .setupRequired
@@ -15,6 +16,8 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     public let textInsertionService = TextInsertionService()
     
     private var currentSession: TranscriptionSession?
+    private var menuBarController: MenuBarController?
+    private var indicatorWindow: IndicatorWindow?
     private var cancellables = Set<AnyCancellable>()
     
     public func applicationDidFinishLaunching(_ notification: Notification) {
@@ -28,9 +31,14 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
             return
         }
         
+        self.menuBarController = MenuBarController(appDelegate: self)
+        updateLaunchAtLogin(enabled: preferencesStore.launchAtLogin)
+        
         audioCaptureManager.onAudioBuffer = { [weak self] samples in
             guard let self = self else { return }
             if self.appState == .listening {
+                let volume = self.calculateVolumeLevel(samples)
+                self.indicatorWindow?.viewModel.updateAudioLevel(volume)
                 Task {
                     await self.currentSession?.processAudioBuffer(samples)
                 }
@@ -120,11 +128,16 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         
         currentSession?.start()
         
+        self.indicatorWindow = IndicatorWindow()
+        self.indicatorWindow?.show(at: preferencesStore.indicatorPosition)
+        
         do {
             try audioCaptureManager.start()
             self.appState = .listening
         } catch {
             print("Failed to start audio recording: \(error)")
+            self.indicatorWindow?.hide()
+            self.indicatorWindow = nil
             self.appState = .error(.transcriptionFailed("Failed to start audio recording: \(error.localizedDescription)"))
         }
     }
@@ -135,6 +148,9 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         self.appState = .processing
         audioCaptureManager.stop()
         
+        self.indicatorWindow?.hide()
+        self.indicatorWindow = nil
+        
         let session = currentSession
         currentSession = nil
         
@@ -143,6 +159,34 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
             DispatchQueue.main.async {
                 if case .processing = self.appState {
                     self.appState = .idle
+                }
+            }
+        }
+    }
+    
+    private func calculateVolumeLevel(_ samples: [Float]) -> Float {
+        guard !samples.isEmpty else { return 0.0 }
+        let sumOfSquares = samples.reduce(0.0) { $0 + ($1 * $1) }
+        let rms = sqrt(sumOfSquares / Float(samples.count))
+        return min(max(rms * 5.0, 0.0), 1.0)
+    }
+    
+    public func updateLaunchAtLogin(enabled: Bool) {
+        let service = SMAppService.mainApp
+        if enabled {
+            if service.status != .enabled {
+                do {
+                    try service.register()
+                } catch {
+                    print("Failed to register SMAppService: \(error)")
+                }
+            }
+        } else {
+            if service.status == .enabled {
+                do {
+                    try service.unregister()
+                } catch {
+                    print("Failed to unregister SMAppService: \(error)")
                 }
             }
         }
