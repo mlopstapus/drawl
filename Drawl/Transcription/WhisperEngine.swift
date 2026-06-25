@@ -23,7 +23,7 @@ public class WhisperEngine: TranscriptionEngineProtocol {
         guard sampleRate == 16000 else {
             throw AppError.transcriptionFailed("Invalid sample rate: \(sampleRate). Whisper requires 16000Hz.")
         }
-        NSLog("[WhisperEngine] context: %@", context ?? "(none)")
+        NSLog("[WhisperEngine] context: %{public}@", context ?? "(none)")
         var options = DecodingOptions()
         if let context = context, !context.isEmpty, let tokenizer = wk.tokenizer {
             let allPromptTokens = tokenizer.encode(text: " " + context.trimmingCharacters(in: .whitespaces))
