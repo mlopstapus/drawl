@@ -134,7 +134,7 @@ public class IndicatorWindow: NSPanel {
         }
     }
     
-    public func updatePosition(for position: IndicatorPosition) {
+public func updatePosition(for position: IndicatorPosition) {
         guard let screen = NSScreen.main else { return }
         let screenFrame = screen.frame
         let point = calculatePosition(for: position, screenFrame: screenFrame)
@@ -144,11 +144,10 @@ public class IndicatorWindow: NSPanel {
     public func calculatePosition(for position: IndicatorPosition, screenFrame: NSRect) -> NSPoint {
         let size: CGFloat = 80
         let margin: CGFloat = 20
-        
+
         switch position {
         case .nearCursor:
             let mouseLoc = NSEvent.mouseLocation
-            // Center the 14x14 dot (at offset 40,40 in the 80x80 window) precisely relative to the cursor
             return NSPoint(x: mouseLoc.x - 6, y: mouseLoc.y - 74)
             
         case .topRight:

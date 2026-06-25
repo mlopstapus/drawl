@@ -24,7 +24,9 @@ public class WhisperEngine: TranscriptionEngineProtocol {
             throw AppError.transcriptionFailed("Invalid sample rate: \(sampleRate). Whisper requires 16000Hz.")
         }
         let results = try await wk.transcribe(audioArray: audioSamples)
-        return results.map { $0.text }.joined().trimmingCharacters(in: .whitespacesAndNewlines)
+        return results.map { $0.text }.joined()
+            .replacingOccurrences(of: "[BLANK_AUDIO]", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     public func unloadModel() {

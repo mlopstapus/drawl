@@ -192,6 +192,7 @@ struct SetupWizardView: View {
                 Button("Grant Microphone Access") {
                     micPermission.requestAccess { granted in
                         if granted {
+                            NSApp.activate(ignoringOtherApps: true)
                             withAnimation {
                                 currentStep = 2
                             }
