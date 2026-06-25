@@ -32,8 +32,8 @@ jobs:
             -scheme Drawl \
             -configuration Release \
             -destination 'platform=macOS,arch=arm64' \
+            -derivedDataPath build \
             -clonedSourcePackagesDirPath build/SourcePackages \
-            SYMROOT=$(pwd)/build \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO
 

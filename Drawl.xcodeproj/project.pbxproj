@@ -41,6 +41,9 @@
 		F4589709BD643FE4ED0BB747 /* TextInsertionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E294717DA76706F036AFC4E0 /* TextInsertionService.swift */; };
 		FDA9DC6C6885D77855642494 /* AudioCaptureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D9B3B80AAAC115F0E6833F /* AudioCaptureManager.swift */; };
 		FFAEE281B82AB43F815056B3 /* PreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89F365B512E97A35BDA8716 /* PreferencesStore.swift */; };
+		AA11223344556677889900AA /* ScreenRecordingPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB11223344556677889900BB /* ScreenRecordingPermission.swift */; };
+		CC11223344556677889900CC /* ScreenContextService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD11223344556677889900DD /* ScreenContextService.swift */; };
+		EE11223344556677889900EE /* ScreenContextServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF11223344556677889900FF /* ScreenContextServiceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +93,9 @@
 		E917E17A449CC62AA6494B36 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		F0FE3429E10DDAAF87A5F900 /* MenuBarControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarControllerTests.swift; sourceTree = "<group>"; };
 		FFF5B05419CA9C6FCBD220F0 /* TranscriptionSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionSessionTests.swift; sourceTree = "<group>"; };
+		BB11223344556677889900BB /* ScreenRecordingPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingPermission.swift; sourceTree = "<group>"; };
+		DD11223344556677889900DD /* ScreenContextService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenContextService.swift; sourceTree = "<group>"; };
+		FF11223344556677889900FF /* ScreenContextServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenContextServiceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +179,7 @@
 				F0FE3429E10DDAAF87A5F900 /* MenuBarControllerTests.swift */,
 				13360F6A4CFF9A8C1FAA071F /* ModelManagerTests.swift */,
 				ACB8D9604F10583D8A561118 /* PreferencesStoreTests.swift */,
+				FF11223344556677889900FF /* ScreenContextServiceTests.swift */,
 				56A2443FEA6031466F7AA681 /* SetupWizardTests.swift */,
 				1FF1C3336F791AB454E530D6 /* TextInsertionTests.swift */,
 				FFF5B05419CA9C6FCBD220F0 /* TranscriptionSessionTests.swift */,
@@ -194,6 +201,7 @@
 			isa = PBXGroup;
 			children = (
 				8D6A4F8F22A77AAE0DF0E054 /* HotkeyManager.swift */,
+				DD11223344556677889900DD /* ScreenContextService.swift */,
 				E294717DA76706F036AFC4E0 /* TextInsertionService.swift */,
 			);
 			path = Input;
@@ -204,6 +212,7 @@
 			children = (
 				6E5B086E4653BE75AE8960D8 /* AccessibilityPermission.swift */,
 				8C6DEF26454994858B94ACD1 /* MicrophonePermission.swift */,
+				BB11223344556677889900BB /* ScreenRecordingPermission.swift */,
 			);
 			path = Permissions;
 			sourceTree = "<group>";
@@ -339,6 +348,8 @@
 				310CA58683D8CBE3216CC479 /* IndicatorWindow.swift in Sources */,
 				990FA056410B60047906A5C2 /* MenuBarController.swift in Sources */,
 				00E10CECE9F14CE59455E80B /* MicrophonePermission.swift in Sources */,
+				AA11223344556677889900AA /* ScreenRecordingPermission.swift in Sources */,
+				CC11223344556677889900CC /* ScreenContextService.swift in Sources */,
 				C67DCB949E6C06515DE66E32 /* ModelManager.swift in Sources */,
 				57BE90ED071C043B8DA0CA70 /* Models.swift in Sources */,
 				FFAEE281B82AB43F815056B3 /* PreferencesStore.swift in Sources */,
@@ -363,6 +374,7 @@
 				68F998BA1752ECC7F40D8353 /* ModelManagerTests.swift in Sources */,
 				1E718A239A11C00686B04C71 /* PreferencesStoreTests.swift in Sources */,
 				98A6C02901C641C921E51E1C /* SetupWizardTests.swift in Sources */,
+				EE11223344556677889900EE /* ScreenContextServiceTests.swift in Sources */,
 				6855157767F6AA58CFFB23D1 /* TextInsertionTests.swift in Sources */,
 				294F8DF511E073C333838570 /* TranscriptionSessionTests.swift in Sources */,
 				CD359C6D5C6C85A6ED9D9FBE /* WhisperEngineTests.swift in Sources */,
