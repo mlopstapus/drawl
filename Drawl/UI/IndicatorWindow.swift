@@ -9,7 +9,7 @@ struct IndicatorView: View {
             Circle()
                 .fill(
                     RadialGradient(
-                        colors: [Color.purple.opacity(0.65), Color.purple.opacity(0.0)],
+                        colors: [viewModel.color.opacity(0.65), viewModel.color.opacity(0.0)],
                         center: .center,
                         startRadius: 4,
                         endRadius: 18
@@ -19,11 +19,11 @@ struct IndicatorView: View {
                 .scaleEffect(viewModel.isSpeaking ? CGFloat(1.1 + viewModel.audioLevel * 0.7) : viewModel.pulseScale)
                 .opacity(viewModel.pulseOpacity)
                 .animation(.easeInOut(duration: 0.15), value: viewModel.audioLevel)
-            
+
             Circle()
                 .fill(
                     LinearGradient(
-                        colors: [Color.purple, Color.indigo],
+                        colors: [viewModel.color, viewModel.color.opacity(0.7)],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
@@ -33,7 +33,7 @@ struct IndicatorView: View {
                     Circle()
                         .stroke(Color.white.opacity(0.85), lineWidth: 1.5)
                 )
-                .shadow(color: Color.purple.opacity(0.5), radius: 4, x: 0, y: 0)
+                .shadow(color: viewModel.color.opacity(0.5), radius: 4, x: 0, y: 0)
         }
         .frame(width: 80, height: 80)
     }
@@ -44,10 +44,12 @@ public class IndicatorViewModel: ObservableObject {
     @Published public var audioLevel: Float = 0.0
     @Published public var pulseScale: CGFloat = 1.0
     @Published public var pulseOpacity: Double = 0.8
-    
+    @Published public var color: Color
+
     private var timer: Timer?
-    
-    public init() {
+
+    public init(color: Color = Color(hex: "#8B5CF6")) {
+        self.color = color
         startPulseAnimation()
     }
     
@@ -90,9 +92,10 @@ public class IndicatorViewModel: ObservableObject {
 }
 
 public class IndicatorWindow: NSPanel {
-    public let viewModel = IndicatorViewModel()
-    
-    public init() {
+    public let viewModel: IndicatorViewModel
+
+    public init(color: Color = Color(hex: "#8B5CF6")) {
+        self.viewModel = IndicatorViewModel(color: color)
         super.init(
             contentRect: NSRect(x: 0, y: 0, width: 80, height: 80),
             styleMask: [.borderless, .nonactivatingPanel],

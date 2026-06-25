@@ -15,6 +15,7 @@
 		2377CEA3068761094C4BD74A /* DrawlApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017482D33D2C63995B6EA671 /* DrawlApp.swift */; };
 		294F8DF511E073C333838570 /* TranscriptionSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF5B05419CA9C6FCBD220F0 /* TranscriptionSessionTests.swift */; };
 		310CA58683D8CBE3216CC479 /* IndicatorWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A39E4191D599303D9321F6 /* IndicatorWindow.swift */; };
+		AB12CD34EF567890AB12CD34 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD34EF5678901234CD34EF56 /* Color+Hex.swift */; };
 		32D1B44DC9585918487EA670 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C9540ED5F1EA16E0A189B0 /* AppDelegate.swift */; };
 		3D3D8C4971C64855C86B82EA /* WhisperKit in Frameworks */ = {isa = PBXBuildFile; productRef = A1500002DCB98122B730604C /* WhisperKit */; };
 		3E269E0471C75E4ADB10A613 /* HistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE95BD9ED7BEB993738B524B /* HistoryStore.swift */; };
@@ -84,6 +85,7 @@
 		ADB1570269106E7994CA99F8 /* Drawl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Drawl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA99408CA24970A441582A8B /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		C1A39E4191D599303D9321F6 /* IndicatorWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndicatorWindow.swift; sourceTree = "<group>"; };
+		CD34EF5678901234CD34EF56 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		CE5369B5572F097F494EF6F6 /* AudioCaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCaptureTests.swift; sourceTree = "<group>"; };
 		DE95BD9ED7BEB993738B524B /* HistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryStore.swift; sourceTree = "<group>"; };
 		DEE716A1A0C70208084B92F0 /* HotkeyManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManagerTests.swift; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 		07F986C3C3F1DD3443EC1398 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				CD34EF5678901234CD34EF56 /* Color+Hex.swift */,
 				E917E17A449CC62AA6494B36 /* HistoryView.swift */,
 				C1A39E4191D599303D9321F6 /* IndicatorWindow.swift */,
 				E67AE780BE63933D8304A2CF /* MenuBarController.swift */,
@@ -345,6 +348,7 @@
 				3E269E0471C75E4ADB10A613 /* HistoryStore.swift in Sources */,
 				BE17302DE64A508A4EC81CA6 /* HistoryView.swift in Sources */,
 				5B11C2FA83578CA61FC480DD /* HotkeyManager.swift in Sources */,
+				AB12CD34EF567890AB12CD34 /* Color+Hex.swift in Sources */,
 				310CA58683D8CBE3216CC479 /* IndicatorWindow.swift in Sources */,
 				990FA056410B60047906A5C2 /* MenuBarController.swift in Sources */,
 				00E10CECE9F14CE59455E80B /* MicrophonePermission.swift in Sources */,
