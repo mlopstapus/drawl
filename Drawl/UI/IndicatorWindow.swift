@@ -138,7 +138,7 @@ public class IndicatorWindow: NSPanel {
         }
     }
     
-public func updatePosition(for position: IndicatorPosition) {
+    public func updatePosition(for position: IndicatorPosition) {
         guard let screen = NSScreen.main else { return }
         let screenFrame = screen.frame
         let point = calculatePosition(for: position, screenFrame: screenFrame)

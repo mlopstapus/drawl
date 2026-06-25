@@ -25,8 +25,9 @@ public class WhisperEngine: TranscriptionEngineProtocol {
         }
         var options = DecodingOptions()
         if let context = context, !context.isEmpty, let tokenizer = wk.tokenizer {
-            let promptTokens = tokenizer.encode(text: " " + context.trimmingCharacters(in: .whitespaces))
+            let allPromptTokens = tokenizer.encode(text: " " + context.trimmingCharacters(in: .whitespaces))
                 .filter { $0 < tokenizer.specialTokens.specialTokenBegin }
+            let promptTokens = allPromptTokens.count > 224 ? Array(allPromptTokens.prefix(224)) : allPromptTokens
             if !promptTokens.isEmpty {
                 options.promptTokens = promptTokens
             }
