@@ -151,7 +151,9 @@ GitHub → Settings → Branches → Add branch protection rule for `main`:
 
 ### Release secrets
 
-Add the following in GitHub → Settings → Secrets and Variables → Actions:
+No secrets are required for the current release pipeline — it builds and publishes an unsigned DMG. Users will need to right-click → Open the first time to bypass Gatekeeper.
+
+To add code signing and notarization in the future (requires an Apple Developer Program membership, $99/year), restore the signing steps in `.github/workflows/release.yml` and add these secrets in GitHub → Settings → Secrets and Variables → Actions:
 
 | Secret Name | How to Obtain |
 |-------------|--------------|

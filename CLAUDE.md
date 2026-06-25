@@ -19,4 +19,4 @@ Test scheme: `DrawlTests`. App scheme: `Drawl`. Pass `CODE_SIGN_IDENTITY="" CODE
 ## Post-merge manual steps
 
 - **Branch protection**: After `ci.yml` runs once on `main`, configure branch protection in GitHub Settings (steps in CONTRIBUTING.md#maintainer-setup).
-- **Release secrets**: Six GitHub Actions secrets must be set before the release pipeline can run (see CONTRIBUTING.md#release-secrets).
+- **Release secrets**: Current pipeline is unsigned (no secrets needed). Signing/notarization can be added later with an Apple Developer account (see CONTRIBUTING.md#release-secrets).

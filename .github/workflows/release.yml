@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    name: Build, Sign, Notarize, and Publish
+    name: Build and Publish
     runs-on: macos-15
 
     steps:
@@ -32,7 +32,9 @@ jobs:
             -scheme Drawl \
             -configuration Release \
             -destination 'platform=macOS,arch=arm64' \
-            -clonedSourcePackagesDirPath build/SourcePackages
+            -clonedSourcePackagesDirPath build/SourcePackages \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO
 
       - name: Run tests
         run: |
@@ -44,67 +46,8 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO
 
-      - name: Import Developer ID certificate
-        env:
-          CERTIFICATE_P12_BASE64: ${{ secrets.CERTIFICATE_P12_BASE64 }}
-          CERTIFICATE_P12_PASSWORD: ${{ secrets.CERTIFICATE_P12_PASSWORD }}
-          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
-        run: |
-          # Create a temporary keychain
-          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
-          security default-keychain -s build.keychain
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
-          security set-keychain-settings -lut 21600 build.keychain
-
-          # Decode and import the certificate
-          echo "$CERTIFICATE_P12_BASE64" | base64 --decode > /tmp/certificate.p12
-          security import /tmp/certificate.p12 \
-            -k build.keychain \
-            -P "$CERTIFICATE_P12_PASSWORD" \
-            -T /usr/bin/codesign
-          rm /tmp/certificate.p12
-
-          # Allow codesign to access the key without prompting
-          security set-key-partition-list \
-            -S apple-tool:,apple:,codesign: \
-            -s -k "$KEYCHAIN_PASSWORD" build.keychain
-
-      - name: Sign app
-        run: |
-          codesign \
-            --deep \
-            --force \
-            --verify \
-            --verbose \
-            --options runtime \
-            --sign "Developer ID Application" \
-            build/Build/Products/Release/Drawl.app
-
       - name: Package DMG
         run: bash scripts/create_dmg.sh --app-path build/Build/Products/Release/Drawl.app
-
-      - name: Notarize DMG
-        env:
-          NOTARIZATION_APPLE_ID: ${{ secrets.NOTARIZATION_APPLE_ID }}
-          NOTARIZATION_TEAM_ID: ${{ secrets.NOTARIZATION_TEAM_ID }}
-          NOTARIZATION_APP_SPECIFIC_PASSWORD: ${{ secrets.NOTARIZATION_APP_SPECIFIC_PASSWORD }}
-        run: |
-          xcrun notarytool submit build/Drawl.dmg \
-            --apple-id "$NOTARIZATION_APPLE_ID" \
-            --team-id "$NOTARIZATION_TEAM_ID" \
-            --password "$NOTARIZATION_APP_SPECIFIC_PASSWORD" \
-            --wait \
-            --timeout 30m
-
-      - name: Staple notarization ticket
-        run: xcrun stapler staple build/Drawl.dmg
-
-      - name: Validate staple
-        run: xcrun stapler validate build/Drawl.dmg
-
-      - name: Delete temporary keychain
-        if: always()
-        run: security delete-keychain build.keychain 2>/dev/null || true
 
       - name: Create GitHub Release
         env:
