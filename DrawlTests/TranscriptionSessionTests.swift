@@ -103,8 +103,6 @@ final class TranscriptionSessionTests: XCTestCase {
         )
 
         session.start()
-        // Give the async context capture time to complete before the buffer fires
-        try await Task.sleep(nanoseconds: 200_000_000)
         await session.processAudioBuffer([0.0, 0.0])
         await session.stop()
 

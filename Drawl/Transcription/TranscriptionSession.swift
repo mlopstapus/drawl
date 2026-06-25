@@ -14,7 +14,7 @@ public class TranscriptionSession {
     private var sourceAppName: String?
     private var lastTranscriptionTask: Task<Void, Never>?
     private let screenContextService: ScreenContextService?
-    private var screenContext: String?
+    private var screenContextTask: Task<String?, Never>?
 
     public init(
         engine: TranscriptionEngineProtocol,
@@ -44,15 +44,16 @@ public class TranscriptionSession {
         self.startTime = Date()
         self.sessionText = ""
         self.segmentCount = 0
-        self.screenContext = nil
+        self.screenContextTask?.cancel()
+        self.screenContextTask = nil
 
         if let activeApp = NSWorkspace.shared.frontmostApplication {
             self.sourceAppName = activeApp.localizedName
         }
 
         if let service = screenContextService {
-            Task {
-                self.screenContext = await service.captureContext()
+            self.screenContextTask = Task {
+                await service.captureContext()
             }
         }
     }
@@ -87,7 +88,8 @@ public class TranscriptionSession {
     
     private func transcribeAndInsert(_ samples: [Float]) async {
         do {
-            let transcribed = try await engine.transcribe(audioSamples: samples, sampleRate: 16000, context: screenContext)
+            let context = await screenContextTask?.value
+            let transcribed = try await engine.transcribe(audioSamples: samples, sampleRate: 16000, context: context)
             let trimmed = transcribed.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !trimmed.isEmpty else { return }
             
