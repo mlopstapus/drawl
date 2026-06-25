@@ -181,11 +181,8 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         }
         
         do {
-            DispatchQueue.main.async {
-                self.appState = .modelDownloading(progress: 0.0)
-            }
             try await whisperEngine.loadModel(at: modelPath)
-            
+
             DispatchQueue.main.async {
                 self.loadedModelTier = tier
                 self.appState = .idle
