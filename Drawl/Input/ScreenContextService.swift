@@ -48,7 +48,7 @@ open class ScreenContextService {
         }.value
     }
 
-    func filterWords(from text: String) -> String {
+    public func filterWords(from text: String) -> String {
         let separators = CharacterSet.whitespaces
             .union(.newlines)
             .union(.punctuationCharacters)
@@ -68,7 +68,7 @@ open class ScreenContextService {
                 && word.rangeOfCharacter(from: .letters) != nil
 
             let isProperNoun = firstIsUpper && word.count >= 4 && !isAllCaps
-            let isMixedCase = hasInternalUpper
+            let isMixedCase = hasInternalUpper && !isAllCaps
             let isAbbreviation = isAllCaps && word.count > 2
 
             if isProperNoun || isMixedCase || isAbbreviation {
