@@ -13,15 +13,12 @@ struct SetupWizardView: View {
         VStack(spacing: 0) {
             // Header with App Cover / Icon representation
             VStack(spacing: 8) {
-                Image(systemName: "waveform.circle.fill")
-                    .font(.system(size: 48))
-                    .foregroundStyle(
-                        LinearGradient(
-                            colors: [.purple, .indigo],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
+                Image("AppCover")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: 120)
+                    .cornerRadius(12)
+                    .shadow(color: Color.purple.opacity(0.3), radius: 8, x: 0, y: 4)
                 
                 Text("Welcome to Drawl")
                     .font(.title)
@@ -31,8 +28,8 @@ struct SetupWizardView: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-            .padding(.top, 30)
-            .padding(.bottom, 20)
+            .padding(.top, 20)
+            .padding(.bottom, 10)
             
             // Progress Indicator (Step tracker)
             HStack(spacing: 24) {

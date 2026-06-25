@@ -16,7 +16,13 @@ public class AccessibilityPermission: ObservableObject {
     }
     
     public func checkStatus() {
-        self.isGranted = AXIsProcessTrusted()
+        let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: false] as CFDictionary
+        let status = AXIsProcessTrustedWithOptions(options)
+        if self.isGranted != status {
+            DispatchQueue.main.async {
+                self.isGranted = status
+            }
+        }
     }
     
     public func startPolling() {
@@ -26,8 +32,18 @@ public class AccessibilityPermission: ObservableObject {
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             let oldStatus = self.isGranted
-            self.checkStatus()
-            if self.isGranted && !oldStatus {
+            
+            // Check status directly
+            let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: false] as CFDictionary
+            let status = AXIsProcessTrustedWithOptions(options)
+            
+            if status != oldStatus {
+                DispatchQueue.main.async {
+                    self.isGranted = status
+                }
+            }
+            
+            if status && !oldStatus {
                 self.stopPolling()
             }
         }
