@@ -4,6 +4,7 @@ import ApplicationServices
 public class HotkeyManager: HotkeyManagerProtocol {
     public var onHotkeyDown: (() -> Void)?
     public var onHotkeyUp: (() -> Void)?
+    public var onHotkeyCancel: (() -> Void)?
     
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
@@ -12,6 +13,10 @@ public class HotkeyManager: HotkeyManagerProtocol {
     private var targetModifiers: CGEventFlags = .maskAlternate // Default Option
     
     private var isKeyPressed = false
+    
+    private var isModifierOnlyKey: Bool {
+        return [54, 55, 56, 58, 59, 60, 61, 62, 63].contains(targetKeyCode)
+    }
     
     public init() {}
     
@@ -45,6 +50,12 @@ public class HotkeyManager: HotkeyManagerProtocol {
             callback: { (proxy, type, event, refcon) -> Unmanaged<CGEvent>? in
                 guard let refcon = refcon else { return Unmanaged.passUnretained(event) }
                 let manager = Unmanaged<HotkeyManager>.fromOpaque(refcon).takeUnretainedValue()
+                
+                // Ignore events simulated by our own process (e.g. simulatePaste Command+V)
+                let creatorPid = event.getIntegerValueField(.eventSourceUnixProcessID)
+                if creatorPid == Int64(getpid()) {
+                    return Unmanaged.passUnretained(event)
+                }
                 
                 if manager.handleCGEvent(type: type, event: event) {
                     return nil // Consume event
@@ -92,6 +103,34 @@ public class HotkeyManager: HotkeyManagerProtocol {
     }
     
     private func processEvent(type: CGEventType, keyCode: UInt16, flags: CGEventFlags) -> Bool {
+        if isModifierOnlyKey {
+            if type == .flagsChanged {
+                if keyCode == targetKeyCode {
+                    let modifierMatched = flags.contains(targetModifiers)
+                    if modifierMatched {
+                        if !isKeyPressed {
+                            isKeyPressed = true
+                            onHotkeyDown?()
+                        }
+                    } else {
+                        if isKeyPressed {
+                            isKeyPressed = false
+                            onHotkeyUp?()
+                        }
+                    }
+                }
+                return false // Never consume modifier flags events!
+            }
+            
+            if isKeyPressed && type == .keyDown {
+                isKeyPressed = false
+                onHotkeyCancel?()
+                return false
+            }
+            
+            return false
+        }
+        
         if type == .flagsChanged {
             if isKeyPressed {
                 let modifierMatched = flags.contains(targetModifiers)

@@ -12,14 +12,20 @@ final class ModelManagerTests: XCTestCase {
     }
     
     func testLocalPathAndDeletion() throws {
-        let manager = ModelManager()
+        let tempDir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
+        
+        defer {
+            try? FileManager.default.removeItem(at: tempDir)
+        }
+        
+        let manager = ModelManager(baseDirectory: tempDir)
         let models = manager.availableModels()
         let firstModel = models[0]
         
         XCTAssertNil(manager.localPath(for: firstModel))
         
-        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let dummyPath = appSupport.appendingPathComponent("Drawl").appendingPathComponent("Models").appendingPathComponent(firstModel.tier.fileName)
+        let dummyPath = tempDir.appendingPathComponent(firstModel.tier.fileName)
         
         try Data("dummy".utf8).write(to: dummyPath)
         

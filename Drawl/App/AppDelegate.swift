@@ -7,7 +7,7 @@ import SwiftUI
 public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     @Published public var appState: AppState = .setupRequired
     
-    public let preferencesStore = PreferencesStore()
+    public var preferencesStore = PreferencesStore()
     public let modelManager = ModelManager()
     public var historyStore: HistoryStore!
     
@@ -65,6 +65,10 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         
         hotkeyManager.onHotkeyUp = { [weak self] in
             self?.stopDictation()
+        }
+        
+        hotkeyManager.onHotkeyCancel = { [weak self] in
+            self?.cancelDictation()
         }
         
         NotificationCenter.default.publisher(for: .openSetupWizardWindow)
@@ -195,6 +199,11 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     }
     
     public func registerHotkey() {
+        guard AXIsProcessTrusted() || NSClassFromString("XCTestCase") != nil else {
+            print("Skipping hotkey registration: Accessibility permission not granted yet.")
+            return
+        }
+        
         hotkeyManager.unregister()
         do {
             try hotkeyManager.register(
@@ -256,6 +265,18 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         }
     }
     
+    public func cancelDictation() {
+        guard appState == .listening else { return }
+        
+        self.appState = .idle
+        audioCaptureManager.stop()
+        
+        self.indicatorWindow?.hide()
+        self.indicatorWindow = nil
+        
+        currentSession = nil
+    }
+    
     private func calculateVolumeLevel(_ samples: [Float]) -> Float {
         guard !samples.isEmpty else { return 0.0 }
         let sumOfSquares = samples.reduce(0.0) { $0 + ($1 * $1) }
@@ -293,8 +314,8 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         }
         
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 550, height: 480),
-            styleMask: [.titled, .closable],
+            contentRect: NSRect(x: 0, y: 0, width: 550, height: 520),
+            styleMask: [.titled, .closable, .resizable],
             backing: .buffered,
             defer: false
         )

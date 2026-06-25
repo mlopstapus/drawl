@@ -10,6 +10,7 @@ public protocol TranscriptionEngineProtocol {
 public protocol HotkeyManagerProtocol {
     var onHotkeyDown: (() -> Void)? { get set }
     var onHotkeyUp: (() -> Void)? { get set }
+    var onHotkeyCancel: (() -> Void)? { get set }
     func register(keyCode: UInt16, modifiers: UInt64) throws
     func unregister()
 }

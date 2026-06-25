@@ -13,10 +13,10 @@ struct SetupWizardView: View {
         VStack(spacing: 0) {
             // Header with App Cover / Icon representation
             VStack(spacing: 8) {
-                Image("AppCover")
+                Image("AppLogo")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(height: 120)
+                    .frame(height: 100)
                     .cornerRadius(12)
                     .shadow(color: Color.purple.opacity(0.3), radius: 8, x: 0, y: 4)
                 
@@ -42,17 +42,19 @@ struct SetupWizardView: View {
             Divider()
             
             // Step Content
-            VStack {
-                if currentStep == 1 {
-                    microphoneStep
-                } else if currentStep == 2 {
-                    accessibilityStep
-                } else {
-                    modelSetupStep
+            ScrollView {
+                VStack {
+                    if currentStep == 1 {
+                        microphoneStep
+                    } else if currentStep == 2 {
+                        accessibilityStep
+                    } else {
+                        modelSetupStep
+                    }
                 }
+                .padding()
             }
             .frame(maxHeight: .infinity)
-            .padding()
             
             Divider()
             
@@ -89,7 +91,10 @@ struct SetupWizardView: View {
                     .disabled(!accessPermission.isGranted)
                 } else {
                     let isDownloaded = appDelegate.modelManager.localPath(for: SpeechModel(tier: selectedTier)) != nil
-                    Button(isDownloaded ? "Finish Setup" : "Start Download") {
+                    let isDownloading = isDownloadingSelected
+                    let buttonTitle = isDownloaded ? "Finish Setup" : (isDownloading ? "Downloading..." : "Start Download")
+                    
+                    Button(buttonTitle) {
                         if isDownloaded {
                             finishSetup()
                         } else {
@@ -99,14 +104,14 @@ struct SetupWizardView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(.purple)
-                    // Disable if downloading another model
-                    .disabled(isDownloadingOtherThanSelected)
+                    // Disable if downloading another model or current model
+                    .disabled(isDownloading || isDownloadingOtherThanSelected)
                 }
             }
             .padding()
             .background(Color(NSColor.windowBackgroundColor).opacity(0.3))
         }
-        .frame(width: 550, height: 480)
+        .frame(width: 550, height: 520)
         .background(
             VisualEffectView(material: .hudWindow, blendingMode: .behindWindow)
                 .edgesIgnoringSafeArea(.all)
@@ -123,6 +128,13 @@ struct SetupWizardView: View {
     private var isDownloadingOtherThanSelected: Bool {
         if case .modelDownloading = appDelegate.appState {
             return appDelegate.preferencesStore.selectedModelId != selectedTier.id
+        }
+        return false
+    }
+    
+    private var isDownloadingSelected: Bool {
+        if case .modelDownloading = appDelegate.appState {
+            return appDelegate.preferencesStore.selectedModelId == selectedTier.id
         }
         return false
     }
@@ -292,12 +304,20 @@ struct SetupWizardView: View {
                 } else {
                     if case .modelDownloading(let progress) = appDelegate.appState, appDelegate.preferencesStore.selectedModelId == selectedTier.id {
                         VStack(spacing: 6) {
-                            ProgressView(value: progress)
-                                .progressViewStyle(.linear)
-                            Text("Downloading: \(Int(progress * 100))%")
-                                .font(.caption)
-                                .foregroundColor(.purple)
-                                .bold()
+                            if progress == 0.0 {
+                                ProgressView()
+                                Text("Connecting to server...")
+                                    .font(.caption)
+                                    .foregroundColor(.purple)
+                                    .bold()
+                            } else {
+                                ProgressView(value: progress)
+                                    .progressViewStyle(.linear)
+                                Text("Downloading: \(Int(progress * 100))%")
+                                    .font(.caption)
+                                    .foregroundColor(.purple)
+                                    .bold()
+                            }
                         }
                         .padding(.top, 10)
                     } else if case .error(let error) = appDelegate.appState {

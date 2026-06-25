@@ -9,14 +9,15 @@ final class MenuBarControllerTests: XCTestCase {
         
         let menu = controller.statusMenu
         
-        XCTAssertEqual(menu.items.count, 7)
+        XCTAssertEqual(menu.items.count, 8)
         XCTAssertTrue(menu.items[0].title.contains("Status:"))
-        XCTAssertTrue(menu.items[1].isSeparatorItem)
-        XCTAssertEqual(menu.items[2].title, "Start Dictation")
-        XCTAssertEqual(menu.items[3].title, "Transcription History")
-        XCTAssertTrue(menu.items[4].isSeparatorItem)
-        XCTAssertEqual(menu.items[5].title, "Preferences…")
-        XCTAssertEqual(menu.items[6].title, "Quit Drawl")
+        XCTAssertEqual(menu.items[1].title, "Relaunch Setup Wizard...")
+        XCTAssertTrue(menu.items[2].isSeparatorItem)
+        XCTAssertEqual(menu.items[3].title, "Start Dictation")
+        XCTAssertEqual(menu.items[4].title, "Transcription History")
+        XCTAssertTrue(menu.items[5].isSeparatorItem)
+        XCTAssertEqual(menu.items[6].title, "Preferences…")
+        XCTAssertEqual(menu.items[7].title, "Quit Drawl")
     }
     
     func testStatusUpdateOnStateChange() {

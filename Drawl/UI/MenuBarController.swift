@@ -8,6 +8,7 @@ public class MenuBarController: NSObject {
     private var cancellables = Set<AnyCancellable>()
     
     private var statusItemLabel: NSMenuItem!
+    private var relaunchSetupItem: NSMenuItem!
     private var toggleDictationItem: NSMenuItem!
     private var historyItem: NSMenuItem!
     private var preferencesItem: NSMenuItem!
@@ -24,10 +25,26 @@ public class MenuBarController: NSObject {
     
     private func setupMenuBar() {
         if NSClassFromString("XCTestCase") == nil {
+            NSLog("[MenuBarController] setupMenuBar starting")
             statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
             if let button = statusItem?.button {
-                button.image = NSImage(systemSymbolName: "waveform.circle", accessibilityDescription: "Drawl")
-                button.image?.isTemplate = true
+                if let logoImage = NSImage(named: "AppLogo") {
+                    NSLog("[MenuBarController] Successfully loaded AppLogo: size = \(logoImage.size)")
+                    let size = NSSize(width: 18, height: 18)
+                    let resizedImage = NSImage(size: size)
+                    resizedImage.lockFocus()
+                    logoImage.draw(in: NSRect(origin: .zero, size: size))
+                    resizedImage.unlockFocus()
+                    resizedImage.isTemplate = true
+                    button.image = resizedImage
+                    NSLog("[MenuBarController] Set button.image to resized AppLogo (template)")
+                } else {
+                    NSLog("[MenuBarController] AppLogo was not found in assets, falling back to system symbol")
+                    button.image = NSImage(systemSymbolName: "waveform.circle", accessibilityDescription: "Drawl")
+                    button.image?.isTemplate = true
+                }
+            } else {
+                NSLog("[MenuBarController] Failed to get statusItem button")
             }
             statusItem?.menu = statusMenu
         }
@@ -37,6 +54,11 @@ public class MenuBarController: NSObject {
         statusItemLabel = NSMenuItem(title: "Status: Initializing", action: nil, keyEquivalent: "")
         statusItemLabel.isEnabled = false
         statusMenu.addItem(statusItemLabel)
+        
+        relaunchSetupItem = NSMenuItem(title: "Relaunch Setup Wizard...", action: #selector(relaunchSetup), keyEquivalent: "")
+        relaunchSetupItem.target = self
+        relaunchSetupItem.isHidden = true
+        statusMenu.addItem(relaunchSetupItem)
         
         statusMenu.addItem(NSMenuItem.separator())
         
@@ -76,26 +98,32 @@ public class MenuBarController: NSObject {
             toggleDictationItem.isEnabled = false
             toggleDictationItem.title = "Start Dictation"
             historyItem.isEnabled = false
+            relaunchSetupItem.isHidden = false
         case .idle:
             toggleDictationItem.isEnabled = true
             toggleDictationItem.title = "Start Dictation"
             historyItem.isEnabled = true
+            relaunchSetupItem.isHidden = true
         case .listening:
             toggleDictationItem.isEnabled = true
             toggleDictationItem.title = "Stop Dictation"
             historyItem.isEnabled = true
+            relaunchSetupItem.isHidden = true
         case .processing:
             toggleDictationItem.isEnabled = false
             toggleDictationItem.title = "Processing…"
             historyItem.isEnabled = true
+            relaunchSetupItem.isHidden = true
         case .modelDownloading(let progress):
             toggleDictationItem.isEnabled = false
             toggleDictationItem.title = "Downloading Model (\(Int(progress * 100))%)"
             historyItem.isEnabled = false
+            relaunchSetupItem.isHidden = true
         case .error(let error):
             toggleDictationItem.isEnabled = false
             toggleDictationItem.title = "Error: \(error.localizedDescription)"
             historyItem.isEnabled = true
+            relaunchSetupItem.isHidden = false
         }
     }
     
@@ -139,6 +167,11 @@ public class MenuBarController: NSObject {
     @objc private func openPreferences() {
         NSApp.activate(ignoringOtherApps: true)
         NotificationCenter.default.post(name: .openPreferencesWindow, object: nil)
+    }
+    
+    @objc private func relaunchSetup() {
+        NSApp.activate(ignoringOtherApps: true)
+        NotificationCenter.default.post(name: .openSetupWizardWindow, object: nil)
     }
     
     @objc private func quitApp() {

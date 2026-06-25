@@ -2,6 +2,15 @@ import SwiftUI
 
 public struct ShortcutFormatter {
     public static func string(keyCode: UInt16, modifiers: UInt64) -> String {
+        switch keyCode {
+        case 54, 55: return "Command"
+        case 56, 60: return "Shift"
+        case 58, 61: return "Option"
+        case 59, 62: return "Control"
+        case 63: return "Fn"
+        default: break
+        }
+        
         var result = ""
         if (modifiers & 262144) != 0 { result += "⌃" }   // Control
         if (modifiers & 524288) != 0 { result += "⌥" }   // Option
@@ -38,6 +47,8 @@ struct ShortcutRecorderView: View {
     @Binding var modifiers: UInt64
     @State private var isRecording = false
     @State private var eventMonitor: Any?
+    @State private var recordedModifierKey: UInt16? = nil
+    @State private var recordedFlags: NSEvent.ModifierFlags = []
     
     var body: some View {
         Button(action: {
@@ -76,6 +87,9 @@ struct ShortcutRecorderView: View {
     
     private func startRecording() {
         isRecording = true
+        recordedModifierKey = nil
+        recordedFlags = []
+        
         eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .flagsChanged]) { event in
             if event.type == .keyDown {
                 if event.keyCode == 53 { // Escape
@@ -90,6 +104,41 @@ struct ShortcutRecorderView: View {
                 self.modifiers = UInt64(filteredFlags)
                 stopRecording()
                 return nil
+            } else if event.type == .flagsChanged {
+                let keyCode = event.keyCode
+                let isModifier = [54, 55, 56, 58, 59, 60, 61, 62, 63].contains(keyCode)
+                if isModifier {
+                    let flags = event.modifierFlags
+                    
+                    var isPressed = false
+                    switch keyCode {
+                    case 54, 55: // Command
+                        isPressed = flags.contains(.command)
+                    case 56, 60: // Shift
+                        isPressed = flags.contains(.shift)
+                    case 58, 61: // Option
+                        isPressed = flags.contains(.option)
+                    case 59, 62: // Control
+                        isPressed = flags.contains(.control)
+                    case 63: // Fn
+                        isPressed = flags.contains(.function)
+                    default:
+                        break
+                    }
+                    
+                    if isPressed {
+                        self.recordedModifierKey = keyCode
+                        self.recordedFlags = flags
+                    } else if let prevKey = self.recordedModifierKey, prevKey == keyCode {
+                        let rawFlags = self.recordedFlags.rawValue
+                        let filteredFlags = rawFlags & (NSEvent.ModifierFlags.deviceIndependentFlagsMask.rawValue)
+                        
+                        self.keyCode = keyCode
+                        self.modifiers = UInt64(filteredFlags)
+                        stopRecording()
+                        return nil
+                    }
+                }
             }
             return event
         }

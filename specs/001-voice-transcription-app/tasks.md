@@ -210,12 +210,12 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T050 [P] Create app icon and indicator visual assets in `Drawl/Resources/Assets.xcassets` — menu bar icon (template image, 18×18pt), indicator orb graphic (48×48pt)
+- [X] T050 [P] Create app icon and indicator visual assets in `Drawl/Resources/Assets.xcassets` — menu bar icon (template image, 18×18pt), indicator orb graphic (48×48pt)
 - [ ] T051 [P] Add error handling across all services: graceful recovery for model load failures, audio capture failures, text insertion failures; user-facing error alerts with recovery actions
 - [ ] T052 [P] Add hotkey conflict detection in `HotkeyManager`: detect when CGEvent tap fails to register (another app holds the key), notify user via alert, prompt to choose alternative hotkey
 - [ ] T053 Memory optimization: verify <500 MB footprint during active transcription with `base` model; profile with Instruments; add model unload after inactivity timeout if needed
 - [ ] T054 Validate all acceptance scenarios from spec.md manually (run through each Given/When/Then)
-- [ ] T055 Code signing and notarization: configure Xcode for Developer ID signing, create notarization workflow for DMG distribution
+- [X] T055 Code signing and notarization: configure Xcode for Developer ID signing, create notarization workflow for DMG distribution
 - [ ] T056 Run quickstart.md validation: follow quickstart guide from scratch on a clean machine, verify all steps work
 
 ---

@@ -30,6 +30,7 @@
 		9BF31CACD37D4166951B6DC0 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616279CAE00366E7F6C784E6 /* Protocols.swift */; };
 		9CEA647205EADB219B300FEF /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 6B6AF3D4A27466AD8892C891 /* GRDB */; };
 		A7B15558389FACB01CBC568D /* WhisperEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64653F2D5F3678F17B068459 /* WhisperEngine.swift */; };
+		AE68CAAC940B1FEA56014F7A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 70502A1905E472C363A7EB65 /* Assets.xcassets */; };
 		BE17302DE64A508A4EC81CA6 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E917E17A449CC62AA6494B36 /* HistoryView.swift */; };
 		BFA751FF004BD89A07DDC9A8 /* AudioCaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5369B5572F097F494EF6F6 /* AudioCaptureTests.swift */; };
 		C67DCB949E6C06515DE66E32 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA99408CA24970A441582A8B /* ModelManager.swift */; };
@@ -66,6 +67,7 @@
 		616279CAE00366E7F6C784E6 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		64653F2D5F3678F17B068459 /* WhisperEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhisperEngine.swift; sourceTree = "<group>"; };
 		6E5B086E4653BE75AE8960D8 /* AccessibilityPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityPermission.swift; sourceTree = "<group>"; };
+		70502A1905E472C363A7EB65 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7C68175C6542BF61AFEC7D07 /* Drawl.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Drawl.entitlements; sourceTree = "<group>"; };
 		84A81631C7FA96FCE35B8219 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		8C6DEF26454994858B94ACD1 /* MicrophonePermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrophonePermission.swift; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 				D3526B4707CDBF05004FC1AB /* Audio */,
 				A17DC399FE869B9C41CE8269 /* Input */,
 				AC5E6ED43C9639AD3B35F3CA /* Permissions */,
+				B37206EC32E9A230186F1889 /* Resources */,
 				854C7E32AA3DF7EC686933AF /* Storage */,
 				EF9B0018278DADA0CF9B5575 /* Transcription */,
 				07F986C3C3F1DD3443EC1398 /* UI */,
@@ -205,6 +208,14 @@
 			path = Permissions;
 			sourceTree = "<group>";
 		};
+		B37206EC32E9A230186F1889 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				70502A1905E472C363A7EB65 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		D3526B4707CDBF05004FC1AB /* Audio */ = {
 			isa = PBXGroup;
 			children = (
@@ -222,13 +233,6 @@
 				64653F2D5F3678F17B068459 /* WhisperEngine.swift */,
 			);
 			path = Transcription;
-			sourceTree = "<group>";
-		};
-		"TEMP_5FFFFBA2-7461-45F8-8A20-329F60901300" /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -257,6 +261,7 @@
 			buildConfigurationList = 8F7BF91EF584BF945933DFC8 /* Build configuration list for PBXNativeTarget "Drawl" */;
 			buildPhases = (
 				30A6C95056BCF37D3E7CACDA /* Sources */,
+				C9369D4D389D81C518C9A04C /* Resources */,
 				E22AC7E257121DC8D001DF0E /* Frameworks */,
 			);
 			buildRules = (
@@ -306,6 +311,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C9369D4D389D81C518C9A04C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE68CAAC940B1FEA56014F7A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		30A6C95056BCF37D3E7CACDA /* Sources */ = {

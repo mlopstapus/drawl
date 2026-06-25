@@ -19,8 +19,8 @@ final class PreferencesStoreTests: XCTestCase {
     func testDefaultValues() {
         let store = PreferencesStore(defaults: userDefaultsSuite)
         
-        XCTAssertEqual(store.hotkeyKeyCode, 49)
-        XCTAssertEqual(store.hotkeyModifiers, 524288) // ⌥ (Option) modifier value
+        XCTAssertEqual(store.hotkeyKeyCode, 55)
+        XCTAssertEqual(store.hotkeyModifiers, 1048576) // ⌘ (Command) modifier value
         XCTAssertEqual(store.selectedModelId, "ggml-base")
         XCTAssertEqual(store.language, "en")
         XCTAssertEqual(store.indicatorPosition, .nearCursor)
@@ -77,6 +77,7 @@ final class PreferencesStoreTests: XCTestCase {
         
         // Re-inject a clean preferences store with test defaults
         let testStore = PreferencesStore(defaults: testDefaults!)
+        appDelegate.preferencesStore = testStore
         // Set test values in testStore
         testStore.hotkeyKeyCode = 49 // Space
         testStore.hotkeyModifiers = 524288 // Option

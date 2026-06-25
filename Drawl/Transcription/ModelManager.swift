@@ -2,13 +2,19 @@ import Foundation
 
 public class ModelManager: ModelManagerProtocol {
     private let fileManager = FileManager.default
+    private let baseDirectory: URL
     
     private var modelsDirectory: URL {
-        let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        return appSupport.appendingPathComponent("Drawl").appendingPathComponent("Models")
+        return baseDirectory
     }
     
-    public init() {
+    public init(baseDirectory: URL? = nil) {
+        if let base = baseDirectory {
+            self.baseDirectory = base
+        } else {
+            let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+            self.baseDirectory = appSupport.appendingPathComponent("Drawl").appendingPathComponent("Models")
+        }
         try? fileManager.createDirectory(at: modelsDirectory, withIntermediateDirectories: true)
     }
     
@@ -34,6 +40,12 @@ public class ModelManager: ModelManagerProtocol {
         
         session.finishTasksAndInvalidate()
         
+        defer {
+            try? fileManager.removeItem(at: tempURL)
+        }
+        
+        try? fileManager.createDirectory(at: destinationURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        
         if fileManager.fileExists(atPath: destinationURL.path) {
             try fileManager.removeItem(at: destinationURL)
         }
@@ -56,7 +68,7 @@ public class ModelManager: ModelManagerProtocol {
         return modelsDirectory.appendingPathComponent(tier.fileName)
     }
 }
-
+ 
 private class DownloadDelegate: NSObject, URLSessionDownloadDelegate {
     let progress: (Float) -> Void
     var continuation: CheckedContinuation<URL, Error>?
@@ -72,7 +84,14 @@ private class DownloadDelegate: NSObject, URLSessionDownloadDelegate {
     }
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        continuation?.resume(returning: location)
+        let tempDir = FileManager.default.temporaryDirectory
+        let uniqueURL = tempDir.appendingPathComponent(UUID().uuidString + ".tmp")
+        do {
+            try FileManager.default.copyItem(at: location, to: uniqueURL)
+            continuation?.resume(returning: uniqueURL)
+        } catch {
+            continuation?.resume(throwing: error)
+        }
         continuation = nil
     }
     

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleIdentifier</key>
-	<string>com.ben.drawl</string>
+	<string>com.ben.Drawl</string>
 	<key>CFBundleName</key>
 	<string>Drawl</string>
 	<key>CFBundlePackageType</key>

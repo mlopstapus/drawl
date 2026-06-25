@@ -9,15 +9,16 @@ struct IndicatorView: View {
             Circle()
                 .fill(
                     RadialGradient(
-                        colors: [Color.purple.opacity(0.6), Color.blue.opacity(0.0)],
+                        colors: [Color.purple.opacity(0.65), Color.purple.opacity(0.0)],
                         center: .center,
-                        startRadius: 0,
-                        endRadius: 24
+                        startRadius: 4,
+                        endRadius: 18
                     )
                 )
-                .scaleEffect(viewModel.isSpeaking ? 1.0 + CGFloat(viewModel.audioLevel * 1.5) : viewModel.pulseScale)
+                .frame(width: 36, height: 36)
+                .scaleEffect(viewModel.isSpeaking ? CGFloat(1.1 + viewModel.audioLevel * 0.7) : viewModel.pulseScale)
                 .opacity(viewModel.pulseOpacity)
-                .animation(.easeInOut(duration: 0.1), value: viewModel.audioLevel)
+                .animation(.easeInOut(duration: 0.15), value: viewModel.audioLevel)
             
             Circle()
                 .fill(
@@ -30,11 +31,11 @@ struct IndicatorView: View {
                 .frame(width: 14, height: 14)
                 .overlay(
                     Circle()
-                        .stroke(Color.white.opacity(0.8), lineWidth: 1.5)
+                        .stroke(Color.white.opacity(0.85), lineWidth: 1.5)
                 )
-                .shadow(color: Color.purple.opacity(0.6), radius: 6, x: 0, y: 0)
+                .shadow(color: Color.purple.opacity(0.5), radius: 4, x: 0, y: 0)
         }
-        .frame(width: 48, height: 48)
+        .frame(width: 80, height: 80)
     }
 }
 
@@ -59,13 +60,13 @@ public class IndicatorViewModel: ObservableObject {
             
             if increasing {
                 self.pulseOpacity += delta
-                self.pulseScale = CGFloat(1.0 + (self.pulseOpacity - 0.6) * 0.2)
+                self.pulseScale = CGFloat(1.0 + (self.pulseOpacity - 0.6) * 0.75)
                 if self.pulseOpacity >= 1.0 {
                     increasing = false
                 }
             } else {
                 self.pulseOpacity -= delta
-                self.pulseScale = CGFloat(1.0 + (self.pulseOpacity - 0.6) * 0.2)
+                self.pulseScale = CGFloat(1.0 + (self.pulseOpacity - 0.6) * 0.75)
                 if self.pulseOpacity <= 0.6 {
                     increasing = true
                 }
@@ -93,7 +94,7 @@ public class IndicatorWindow: NSPanel {
     
     public init() {
         super.init(
-            contentRect: NSRect(x: 0, y: 0, width: 48, height: 48),
+            contentRect: NSRect(x: 0, y: 0, width: 80, height: 80),
             styleMask: [.borderless, .nonactivatingPanel],
             backing: .buffered,
             defer: false
@@ -107,7 +108,7 @@ public class IndicatorWindow: NSPanel {
         self.hasShadow = false
         
         let hostingView = NSHostingView(rootView: IndicatorView(viewModel: viewModel))
-        hostingView.frame = NSRect(x: 0, y: 0, width: 48, height: 48)
+        hostingView.frame = NSRect(x: 0, y: 0, width: 80, height: 80)
         self.contentView = hostingView
     }
     
@@ -141,13 +142,14 @@ public class IndicatorWindow: NSPanel {
     }
     
     public func calculatePosition(for position: IndicatorPosition, screenFrame: NSRect) -> NSPoint {
-        let size: CGFloat = 48
+        let size: CGFloat = 80
         let margin: CGFloat = 20
         
         switch position {
         case .nearCursor:
             let mouseLoc = NSEvent.mouseLocation
-            return NSPoint(x: mouseLoc.x + 10, y: mouseLoc.y - size - 10)
+            // Center the 14x14 dot (at offset 40,40 in the 80x80 window) precisely relative to the cursor
+            return NSPoint(x: mouseLoc.x - 6, y: mouseLoc.y - 74)
             
         case .topRight:
             return NSPoint(x: screenFrame.width - size - margin, y: screenFrame.height - size - margin)

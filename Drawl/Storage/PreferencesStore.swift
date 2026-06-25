@@ -15,12 +15,60 @@ public class PreferencesStore: ObservableObject {
         static let historyRetentionDays = "historyRetentionDays"
     }
     
+    @Published public var hotkeyKeyCode: UInt16 {
+        didSet {
+            defaults.set(Int(hotkeyKeyCode), forKey: Keys.hotkeyKeyCode)
+        }
+    }
+    
+    @Published public var hotkeyModifiers: UInt64 {
+        didSet {
+            defaults.set(Double(hotkeyModifiers), forKey: Keys.hotkeyModifiers)
+        }
+    }
+    
+    @Published public var selectedModelId: String {
+        didSet {
+            defaults.set(selectedModelId, forKey: Keys.selectedModelId)
+        }
+    }
+    
+    @Published public var language: String {
+        didSet {
+            defaults.set(language, forKey: Keys.language)
+        }
+    }
+    
+    @Published public var indicatorPosition: IndicatorPosition {
+        didSet {
+            defaults.set(indicatorPosition.rawValue, forKey: Keys.indicatorPosition)
+        }
+    }
+    
+    @Published public var launchAtLogin: Bool {
+        didSet {
+            defaults.set(launchAtLogin, forKey: Keys.launchAtLogin)
+        }
+    }
+    
+    @Published public var hasCompletedSetup: Bool {
+        didSet {
+            defaults.set(hasCompletedSetup, forKey: Keys.hasCompletedSetup)
+        }
+    }
+    
+    @Published public var historyRetentionDays: Int {
+        didSet {
+            defaults.set(historyRetentionDays, forKey: Keys.historyRetentionDays)
+        }
+    }
+    
     public init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         
         defaults.register(defaults: [
-            Keys.hotkeyKeyCode: 49, // Space
-            Keys.hotkeyModifiers: 524288, // ⌥ (Option) modifier value
+            Keys.hotkeyKeyCode: 55, // Command
+            Keys.hotkeyModifiers: 1048576, // ⌘ (Command) modifier value
             Keys.selectedModelId: "ggml-base",
             Keys.language: "en",
             Keys.indicatorPosition: IndicatorPosition.nearCursor.rawValue,
@@ -28,75 +76,18 @@ public class PreferencesStore: ObservableObject {
             Keys.hasCompletedSetup: false,
             Keys.historyRetentionDays: 30
         ])
-    }
-    
-    public var hotkeyKeyCode: UInt16 {
-        get { UInt16(defaults.integer(forKey: Keys.hotkeyKeyCode)) }
-        set {
-            objectWillChange.send()
-            defaults.set(Int(newValue), forKey: Keys.hotkeyKeyCode)
-        }
-    }
-    
-    public var hotkeyModifiers: UInt64 {
-        get { UInt64(defaults.double(forKey: Keys.hotkeyModifiers)) }
-        set {
-            objectWillChange.send()
-            defaults.set(Double(newValue), forKey: Keys.hotkeyModifiers)
-        }
-    }
-    
-    public var selectedModelId: String {
-        get { defaults.string(forKey: Keys.selectedModelId) ?? "ggml-base" }
-        set {
-            objectWillChange.send()
-            defaults.set(newValue, forKey: Keys.selectedModelId)
-        }
-    }
-    
-    public var language: String {
-        get { defaults.string(forKey: Keys.language) ?? "en" }
-        set {
-            objectWillChange.send()
-            defaults.set(newValue, forKey: Keys.language)
-        }
-    }
-    
-    public var indicatorPosition: IndicatorPosition {
-        get {
-            guard let rawValue = defaults.string(forKey: Keys.indicatorPosition),
-                  let position = IndicatorPosition(rawValue: rawValue) else {
-                return .nearCursor
-            }
-            return position
-        }
-        set {
-            objectWillChange.send()
-            defaults.set(newValue.rawValue, forKey: Keys.indicatorPosition)
-        }
-    }
-    
-    public var launchAtLogin: Bool {
-        get { defaults.bool(forKey: Keys.launchAtLogin) }
-        set {
-            objectWillChange.send()
-            defaults.set(newValue, forKey: Keys.launchAtLogin)
-        }
-    }
-    
-    public var hasCompletedSetup: Bool {
-        get { defaults.bool(forKey: Keys.hasCompletedSetup) }
-        set {
-            objectWillChange.send()
-            defaults.set(newValue, forKey: Keys.hasCompletedSetup)
-        }
-    }
-    
-    public var historyRetentionDays: Int {
-        get { defaults.integer(forKey: Keys.historyRetentionDays) }
-        set {
-            objectWillChange.send()
-            defaults.set(newValue, forKey: Keys.historyRetentionDays)
-        }
+        
+        // Load initial values from defaults
+        self.hotkeyKeyCode = UInt16(defaults.integer(forKey: Keys.hotkeyKeyCode))
+        self.hotkeyModifiers = UInt64(defaults.double(forKey: Keys.hotkeyModifiers))
+        self.selectedModelId = defaults.string(forKey: Keys.selectedModelId) ?? "ggml-base"
+        self.language = defaults.string(forKey: Keys.language) ?? "en"
+        
+        let rawPos = defaults.string(forKey: Keys.indicatorPosition) ?? IndicatorPosition.nearCursor.rawValue
+        self.indicatorPosition = IndicatorPosition(rawValue: rawPos) ?? .nearCursor
+        
+        self.launchAtLogin = defaults.bool(forKey: Keys.launchAtLogin)
+        self.hasCompletedSetup = defaults.bool(forKey: Keys.hasCompletedSetup)
+        self.historyRetentionDays = defaults.integer(forKey: Keys.historyRetentionDays)
     }
 }
