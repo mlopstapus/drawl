@@ -13,6 +13,8 @@ public class PreferencesStore: ObservableObject {
         static let launchAtLogin = "launchAtLogin"
         static let hasCompletedSetup = "hasCompletedSetup"
         static let historyRetentionDays = "historyRetentionDays"
+        static let screenContextEnabled = "screenContextEnabled"
+        static let indicatorColorHex = "indicatorColorHex"
     }
     
     @Published public var hotkeyKeyCode: UInt16 {
@@ -62,7 +64,19 @@ public class PreferencesStore: ObservableObject {
             defaults.set(historyRetentionDays, forKey: Keys.historyRetentionDays)
         }
     }
-    
+
+    @Published public var screenContextEnabled: Bool {
+        didSet {
+            defaults.set(screenContextEnabled, forKey: Keys.screenContextEnabled)
+        }
+    }
+
+    @Published public var indicatorColorHex: String {
+        didSet {
+            defaults.set(indicatorColorHex, forKey: Keys.indicatorColorHex)
+        }
+    }
+
     public init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         
@@ -74,7 +88,9 @@ public class PreferencesStore: ObservableObject {
             Keys.indicatorPosition: IndicatorPosition.nearCursor.rawValue,
             Keys.launchAtLogin: false,
             Keys.hasCompletedSetup: false,
-            Keys.historyRetentionDays: 30
+            Keys.historyRetentionDays: 30,
+            Keys.screenContextEnabled: false,
+            Keys.indicatorColorHex: "#8B5CF6"
         ])
         
         // Load initial values from defaults
@@ -89,5 +105,7 @@ public class PreferencesStore: ObservableObject {
         self.launchAtLogin = defaults.bool(forKey: Keys.launchAtLogin)
         self.hasCompletedSetup = defaults.bool(forKey: Keys.hasCompletedSetup)
         self.historyRetentionDays = defaults.integer(forKey: Keys.historyRetentionDays)
+        self.screenContextEnabled = defaults.bool(forKey: Keys.screenContextEnabled)
+        self.indicatorColorHex = defaults.string(forKey: Keys.indicatorColorHex) ?? "#8B5CF6"
     }
 }
