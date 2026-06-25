@@ -5,11 +5,21 @@
 **Status**: Draft  
 **Input**: User description: "Build a macOS desktop app (SuperWhisper clone) that runs in the background, does live transcription using a local on-device model, automatically types into active inputs via hotkey activation, with a small visual indicator during transcription."
 
+## Clarifications
+
+### Session 2026-06-24
+
+- Q: What is the hotkey activation mode — hold-to-talk or toggle? → A: Hold-to-talk (hold ⌥+Space to dictate, release to stop).
+- Q: Are speech models bundled with the app or downloaded on first launch? → A: Downloaded on first launch; app ships lightweight and prompts user to download chosen model.
+- Q: How should the app handle Accessibility and Microphone permission onboarding? → A: First-run setup wizard walks user through Microphone → Accessibility → Model download before first use.
+- Q: Should streaming transcription show live partial text or only insert finalized segments? → A: Insert finalized segments only; text appears in ~2–5 second bursts but never changes once inserted.
+- Q: How long should transcription history be retained? → A: Last 30 days, with automatic cleanup of older entries.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 — Hotkey-Activated Dictation (Priority: P1)
 
-A user is typing an email in any application. They press the global hotkey (e.g., ⌥ + Space) to activate voice dictation. A small floating visual indicator appears on screen confirming the app is listening. The user speaks naturally, and transcribed text appears in the currently focused text field in real time. When the user releases the hotkey (or presses it again to toggle off), dictation stops and the indicator disappears.
+A user is typing an email in any application. They hold down the global hotkey (⌥ + Space) to activate voice dictation. A small floating visual indicator appears on screen confirming the app is listening. The user speaks naturally, and transcribed text appears in the currently focused text field in real time. When the user releases the hotkey, dictation stops and the indicator disappears.
 
 **Why this priority**: This is the core value proposition — replacing keyboard typing with voice input in any app on macOS. Without this, there is no product.
 
@@ -18,8 +28,8 @@ A user is typing an email in any application. They press the global hotkey (e.g.
 **Acceptance Scenarios**:
 
 1. **Given** the app is running in the background and a text field is focused, **When** the user presses ⌥ + Space and speaks "Hello world", **Then** "Hello world" appears in the focused text field within 1 second of speech completing.
-2. **Given** dictation is active, **When** the user presses ⌥ + Space again (or releases the hotkey), **Then** dictation stops and the visual indicator disappears.
-3. **Given** dictation is active, **When** the user speaks continuously for 60 seconds, **Then** text is progressively inserted into the text field as it is transcribed (streaming/live).
+2. **Given** dictation is active, **When** the user releases the ⌥ + Space hotkey, **Then** dictation stops and the visual indicator disappears.
+3. **Given** dictation is active, **When** the user speaks continuously for 60 seconds, **Then** finalized text segments are progressively inserted into the text field in ~2–5 second bursts as they are confidently transcribed; once inserted, text does not change.
 4. **Given** no text field is focused, **When** the user presses the hotkey, **Then** the app copies the transcribed text to the clipboard and shows a brief notification.
 
 ---
@@ -105,10 +115,12 @@ The user can view a log of recent transcriptions from the menu bar dropdown or a
 
 ### Edge Cases
 
-- What happens when the user activates dictation but no microphone is available or microphone permission is denied? → The app shows an alert with instructions to grant microphone access in System Settings.
+- What happens when the user activates dictation but no microphone is available or microphone permission is denied? → The app shows an alert with instructions to grant microphone access in System Settings and offers to re-open the setup wizard.
+- What happens when Accessibility permission is not granted? → The app cannot insert text into other apps; it shows an alert explaining the requirement and directs the user to System Settings → Privacy & Security → Accessibility.
 - What happens when the focused application does not accept text input (e.g., Finder desktop)? → The transcribed text is copied to the clipboard with a notification: "Text copied to clipboard."
 - What happens if the user speaks in a language the model doesn't support well? → Transcription proceeds with best-effort output; the user can switch model/language in settings.
-- What happens if the local model file is corrupted or missing? → The app displays an error with an option to re-download/restore the model.
+- What happens if the local model file is corrupted or missing? → The app displays an error with an option to re-download the model.
+- What happens if the model download fails or is interrupted during first-run onboarding? → The app retains partial progress, shows a retry button, and explains the download is required before dictation can be used.
 - What happens during very long dictation sessions (30+ minutes)? → The app continues transcribing with periodic auto-saves to history; memory usage stays bounded by processing in streaming chunks.
 - What happens if another app registers the same global hotkey? → The app detects the conflict, notifies the user, and prompts them to choose an alternative hotkey.
 
@@ -117,33 +129,35 @@ The user can view a log of recent transcriptions from the menu bar dropdown or a
 ### Functional Requirements
 
 - **FR-001**: System MUST run as a macOS menu bar application with no Dock icon and no main window by default.
-- **FR-002**: System MUST register a configurable global hotkey (default: ⌥ + Space) that activates/deactivates voice dictation from any application.
+- **FR-002**: System MUST register a configurable global hotkey (default: ⌥ + Space) using a hold-to-talk model — holding the key activates dictation, releasing it stops dictation.
 - **FR-003**: System MUST capture audio from the system's default microphone when dictation is activated.
 - **FR-004**: System MUST transcribe captured audio to text using a local on-device speech recognition model with no network dependency.
 - **FR-005**: System MUST insert transcribed text into the currently focused text field using OS-level text input simulation (as if typed by the user).
 - **FR-006**: System MUST display a small floating visual indicator (overlay window) when dictation is active, showing listening/processing state.
-- **FR-007**: System MUST support streaming/progressive transcription — text appears as the user speaks, not only after they stop.
+- **FR-007**: System MUST support streaming/progressive transcription by inserting finalized text segments as they are confidently transcribed (in ~2–5 second bursts). Once text is inserted, it MUST NOT be modified or rewritten. No speculative/partial text is inserted into the target app.
 - **FR-008**: System MUST provide a preferences interface accessible from the menu bar dropdown for hotkey customization, model selection, language, and indicator settings.
 - **FR-009**: System MUST persist user preferences across app restarts.
 - **FR-010**: System MUST support "Launch at Login" as a user-configurable option.
-- **FR-011**: System MUST maintain a searchable transcription history log with timestamps.
+- **FR-011**: System MUST maintain a searchable transcription history log with timestamps, retaining entries for the last 30 days and automatically deleting older entries.
 - **FR-012**: System MUST copy transcribed text to clipboard when no text input field is focused.
 - **FR-013**: System MUST request and handle macOS microphone permission gracefully, with user-friendly error messages if denied.
 - **FR-014**: System MUST support at least 3 model size tiers (e.g., tiny, base, small) trading off speed for accuracy.
 - **FR-015**: System MUST support English as the primary transcription language, with the architecture designed to accommodate additional languages.
+- **FR-016**: System MUST provide a first-run setup wizard that sequentially guides the user through: (1) granting Microphone permission, (2) granting Accessibility permission, and (3) selecting and downloading a speech model — all before dictation can be used. Each step must include clear explanations of why the permission is needed, a button to open System Settings to the correct pane, and detection of whether the permission was successfully granted before advancing.
+- **FR-017**: System MUST request and handle macOS Accessibility permission (System Settings → Privacy & Security → Accessibility) gracefully, with user-friendly guidance if denied, since text insertion into other apps is impossible without it.
 
 ### Key Entities
 
 - **Transcription Session**: A single dictation activation-to-deactivation cycle; includes raw audio reference, transcribed text, timestamp, duration, and the target application name.
 - **Speech Model**: The local ML model used for transcription; has attributes: name, size tier, file path, supported languages, and loaded/unloaded state.
 - **User Preferences**: Configuration state including hotkey binding, selected model tier, language, indicator style/position, launch-at-login toggle.
-- **Transcription History Entry**: A saved record of a completed transcription with text content, timestamp, source app, and duration.
+- **Transcription History Entry**: A saved record of a completed transcription with text content, timestamp, source app, and duration. Entries are automatically purged after 30 days.
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
-- **SC-001**: Users can activate dictation and see transcribed text begin appearing in the focused text field within 1 second of starting to speak.
+- **SC-001**: Users can activate dictation and see the first finalized text segment appear in the focused text field within 2–5 seconds of starting to speak.
 - **SC-002**: Transcription works fully offline with zero network requests during dictation.
 - **SC-003**: Transcription accuracy is at least 90% for clear English speech in a quiet environment.
 - **SC-004**: The app's memory footprint stays below 500 MB during active transcription (including loaded model).
@@ -157,7 +171,7 @@ The user can view a log of recent transcriptions from the menu bar dropdown or a
 - Target platform is macOS 13 (Ventura) or later, leveraging Apple's native APIs (AppKit, Accessibility).
 - The app will be built as a native macOS application (Swift) for optimal system integration (global hotkeys, menu bar, accessibility API for text insertion).
 - The local speech model will be based on OpenAI's Whisper architecture, using an optimized runtime (e.g., whisper.cpp or Apple's CoreML-converted variant) for on-device inference.
-- Model files will be bundled with the app or downloaded on first launch; no ongoing cloud dependency.
+- Model files are downloaded on first launch (not bundled with the app); the app installer is lightweight (~10 MB). Users select and download their preferred model tier during first-run onboarding.
 - Text insertion uses macOS Accessibility APIs (AXUIElement) or CGEvent-based keystroke simulation to type into the focused field.
 - The app requires macOS Accessibility permission (System Settings → Privacy & Security → Accessibility) in addition to Microphone permission.
 - Multi-language support beyond English is a future enhancement (v2); the architecture accommodates it but only English is fully supported in v1.
