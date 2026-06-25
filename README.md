@@ -6,7 +6,7 @@
 
 **Hold-to-talk voice dictation for Mac. Entirely on-device.**
 
-Hold ⌥+Space, speak, release — your words appear wherever your cursor is. No cloud, no subscription, no microphone data leaving your machine.
+Hold your configured hotkey, speak, release — your words appear wherever your cursor is. No cloud, no subscription, no microphone data leaving your machine.
 
 <!-- Add demo GIF here -->
 

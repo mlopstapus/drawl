@@ -4,7 +4,7 @@ Thank you for your interest in contributing to Drawl! This guide covers everythi
 
 ## What is Drawl?
 
-Drawl is a native macOS menu bar app that provides hold-to-talk voice dictation powered by a local on-device speech model (Whisper). Users hold ⌥+Space to dictate; transcribed text is inserted into whatever app has focus. All processing is on-device — no audio data ever leaves the Mac.
+Drawl is a native macOS menu bar app that provides hold-to-talk voice dictation powered by a local on-device speech model (Whisper). Users hold a configurable hotkey (default ⌥+Space) to dictate; transcribed text is inserted into whatever app has focus. All processing is on-device — no audio data ever leaves the Mac.
 
 ## Prerequisites
 
