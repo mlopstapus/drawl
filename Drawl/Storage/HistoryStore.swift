@@ -1,7 +1,7 @@
 import Foundation
 import GRDB
 
-public struct HistoryEntry: Codable, FetchableRecord, MutablePersistableRecord, TableRecord, Equatable {
+public struct HistoryEntry: Identifiable, Codable, FetchableRecord, MutablePersistableRecord, TableRecord, Equatable {
     public static let databaseTableName = "historyEntry"
     
     public var id: UUID
