@@ -92,8 +92,13 @@ public class TranscriptionSession {
             let transcribed = try await engine.transcribe(audioSamples: samples, sampleRate: 16000, context: context)
             let trimmed = transcribed.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !trimmed.isEmpty else { return }
-            
-            try await textInsertionService.insertText(trimmed + " ")
+
+            if textInsertionService.canInsertIntoFocusedElement() {
+                try await textInsertionService.insertText(trimmed + " ")
+            } else {
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString(trimmed, forType: .string)
+            }
             
             if self.sessionText.isEmpty {
                 self.sessionText = trimmed
