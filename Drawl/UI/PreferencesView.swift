@@ -349,7 +349,20 @@ struct PreferencesView: View {
                     }
                     
                     Divider()
-                    
+
+                    HStack {
+                        Text("Indicator Color")
+                        Spacer()
+                        ColorPicker("", selection: Binding(
+                            get: { Color(hex: preferencesStore.indicatorColorHex) },
+                            set: { preferencesStore.indicatorColorHex = $0.hexString }
+                        ))
+                        .labelsHidden()
+                        .frame(width: 44)
+                    }
+
+                    Divider()
+
                     Button("Re-run Setup Wizard") {
                         preferencesStore.hasCompletedSetup = false
                         appDelegate.checkSetupAndInitialize()
@@ -361,10 +374,54 @@ struct PreferencesView: View {
                 .padding()
                 .background(Color(NSColor.windowBackgroundColor).opacity(0.5))
                 .cornerRadius(12)
+
+                // Section 4: Transcription Accuracy
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack {
+                        Image(systemName: "text.viewfinder")
+                            .foregroundColor(.purple)
+                        Text("Transcription Accuracy")
+                            .font(.headline)
+                    }
+
+                    Toggle(isOn: Binding(
+                        get: { preferencesStore.screenContextEnabled },
+                        set: { enabled in
+                            if enabled {
+                                let permission = ScreenRecordingPermission()
+                                if permission.isGranted {
+                                    preferencesStore.screenContextEnabled = true
+                                } else {
+                                    permission.requestAccess()
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                        if permission.isGranted {
+                                            preferencesStore.screenContextEnabled = true
+                                        } else {
+                                            permission.openSystemSettings()
+                                        }
+                                    }
+                                }
+                            } else {
+                                preferencesStore.screenContextEnabled = false
+                            }
+                        }
+                    )) {
+                        VStack(alignment: .leading) {
+                            Text("Use screen context to improve accuracy")
+                            Text("Reads visible text to help transcribe names and identifiers. Requires Screen Recording permission.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .toggleStyle(.checkbox)
+                }
+                .padding()
+                .background(Color(NSColor.windowBackgroundColor).opacity(0.5))
+                .cornerRadius(12)
             }
             .padding()
         }
-        .frame(width: 480, height: 580)
+        .frame(width: 480, height: 700)
         .background(
             VisualEffectView(material: .hudWindow, blendingMode: .behindWindow)
                 .edgesIgnoringSafeArea(.all)

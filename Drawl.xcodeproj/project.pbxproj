@@ -15,6 +15,7 @@
 		2377CEA3068761094C4BD74A /* DrawlApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017482D33D2C63995B6EA671 /* DrawlApp.swift */; };
 		294F8DF511E073C333838570 /* TranscriptionSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF5B05419CA9C6FCBD220F0 /* TranscriptionSessionTests.swift */; };
 		310CA58683D8CBE3216CC479 /* IndicatorWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A39E4191D599303D9321F6 /* IndicatorWindow.swift */; };
+		AB12CD34EF567890AB12CD34 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD34EF5678901234CD34EF56 /* Color+Hex.swift */; };
 		32D1B44DC9585918487EA670 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C9540ED5F1EA16E0A189B0 /* AppDelegate.swift */; };
 		3D3D8C4971C64855C86B82EA /* WhisperKit in Frameworks */ = {isa = PBXBuildFile; productRef = A1500002DCB98122B730604C /* WhisperKit */; };
 		3E269E0471C75E4ADB10A613 /* HistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE95BD9ED7BEB993738B524B /* HistoryStore.swift */; };
@@ -41,6 +42,9 @@
 		F4589709BD643FE4ED0BB747 /* TextInsertionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E294717DA76706F036AFC4E0 /* TextInsertionService.swift */; };
 		FDA9DC6C6885D77855642494 /* AudioCaptureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D9B3B80AAAC115F0E6833F /* AudioCaptureManager.swift */; };
 		FFAEE281B82AB43F815056B3 /* PreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89F365B512E97A35BDA8716 /* PreferencesStore.swift */; };
+		AA11223344556677889900AA /* ScreenRecordingPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB11223344556677889900BB /* ScreenRecordingPermission.swift */; };
+		CC11223344556677889900CC /* ScreenContextService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD11223344556677889900DD /* ScreenContextService.swift */; };
+		EE11223344556677889900EE /* ScreenContextServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF11223344556677889900FF /* ScreenContextServiceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +85,7 @@
 		ADB1570269106E7994CA99F8 /* Drawl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Drawl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA99408CA24970A441582A8B /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		C1A39E4191D599303D9321F6 /* IndicatorWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndicatorWindow.swift; sourceTree = "<group>"; };
+		CD34EF5678901234CD34EF56 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		CE5369B5572F097F494EF6F6 /* AudioCaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCaptureTests.swift; sourceTree = "<group>"; };
 		DE95BD9ED7BEB993738B524B /* HistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryStore.swift; sourceTree = "<group>"; };
 		DEE716A1A0C70208084B92F0 /* HotkeyManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManagerTests.swift; sourceTree = "<group>"; };
@@ -90,6 +95,9 @@
 		E917E17A449CC62AA6494B36 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		F0FE3429E10DDAAF87A5F900 /* MenuBarControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarControllerTests.swift; sourceTree = "<group>"; };
 		FFF5B05419CA9C6FCBD220F0 /* TranscriptionSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionSessionTests.swift; sourceTree = "<group>"; };
+		BB11223344556677889900BB /* ScreenRecordingPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingPermission.swift; sourceTree = "<group>"; };
+		DD11223344556677889900DD /* ScreenContextService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenContextService.swift; sourceTree = "<group>"; };
+		FF11223344556677889900FF /* ScreenContextServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenContextServiceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +116,7 @@
 		07F986C3C3F1DD3443EC1398 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				CD34EF5678901234CD34EF56 /* Color+Hex.swift */,
 				E917E17A449CC62AA6494B36 /* HistoryView.swift */,
 				C1A39E4191D599303D9321F6 /* IndicatorWindow.swift */,
 				E67AE780BE63933D8304A2CF /* MenuBarController.swift */,
@@ -173,6 +182,7 @@
 				F0FE3429E10DDAAF87A5F900 /* MenuBarControllerTests.swift */,
 				13360F6A4CFF9A8C1FAA071F /* ModelManagerTests.swift */,
 				ACB8D9604F10583D8A561118 /* PreferencesStoreTests.swift */,
+				FF11223344556677889900FF /* ScreenContextServiceTests.swift */,
 				56A2443FEA6031466F7AA681 /* SetupWizardTests.swift */,
 				1FF1C3336F791AB454E530D6 /* TextInsertionTests.swift */,
 				FFF5B05419CA9C6FCBD220F0 /* TranscriptionSessionTests.swift */,
@@ -194,6 +204,7 @@
 			isa = PBXGroup;
 			children = (
 				8D6A4F8F22A77AAE0DF0E054 /* HotkeyManager.swift */,
+				DD11223344556677889900DD /* ScreenContextService.swift */,
 				E294717DA76706F036AFC4E0 /* TextInsertionService.swift */,
 			);
 			path = Input;
@@ -204,6 +215,7 @@
 			children = (
 				6E5B086E4653BE75AE8960D8 /* AccessibilityPermission.swift */,
 				8C6DEF26454994858B94ACD1 /* MicrophonePermission.swift */,
+				BB11223344556677889900BB /* ScreenRecordingPermission.swift */,
 			);
 			path = Permissions;
 			sourceTree = "<group>";
@@ -336,9 +348,12 @@
 				3E269E0471C75E4ADB10A613 /* HistoryStore.swift in Sources */,
 				BE17302DE64A508A4EC81CA6 /* HistoryView.swift in Sources */,
 				5B11C2FA83578CA61FC480DD /* HotkeyManager.swift in Sources */,
+				AB12CD34EF567890AB12CD34 /* Color+Hex.swift in Sources */,
 				310CA58683D8CBE3216CC479 /* IndicatorWindow.swift in Sources */,
 				990FA056410B60047906A5C2 /* MenuBarController.swift in Sources */,
 				00E10CECE9F14CE59455E80B /* MicrophonePermission.swift in Sources */,
+				AA11223344556677889900AA /* ScreenRecordingPermission.swift in Sources */,
+				CC11223344556677889900CC /* ScreenContextService.swift in Sources */,
 				C67DCB949E6C06515DE66E32 /* ModelManager.swift in Sources */,
 				57BE90ED071C043B8DA0CA70 /* Models.swift in Sources */,
 				FFAEE281B82AB43F815056B3 /* PreferencesStore.swift in Sources */,
@@ -363,6 +378,7 @@
 				68F998BA1752ECC7F40D8353 /* ModelManagerTests.swift in Sources */,
 				1E718A239A11C00686B04C71 /* PreferencesStoreTests.swift in Sources */,
 				98A6C02901C641C921E51E1C /* SetupWizardTests.swift in Sources */,
+				EE11223344556677889900EE /* ScreenContextServiceTests.swift in Sources */,
 				6855157767F6AA58CFFB23D1 /* TextInsertionTests.swift in Sources */,
 				294F8DF511E073C333838570 /* TranscriptionSessionTests.swift in Sources */,
 				CD359C6D5C6C85A6ED9D9FBE /* WhisperEngineTests.swift in Sources */,

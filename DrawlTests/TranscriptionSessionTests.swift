@@ -13,7 +13,7 @@ class MockTranscriptionEngine: TranscriptionEngineProtocol {
         loadCount += 1
     }
     
-    func transcribe(audioSamples: [Float], sampleRate: Int) async throws -> String {
+    func transcribe(audioSamples: [Float], sampleRate: Int, context: String?) async throws -> String {
         transcribeCount += 1
         return mockResultText
     }
@@ -72,5 +72,40 @@ final class TranscriptionSessionTests: XCTestCase {
         let entries = try historyStore.fetchAll()
         XCTAssertEqual(entries.first?.text, "Hello")
         XCTAssertEqual(entries.first?.modelTier, "base")
+    }
+
+    func testContextIsPassedToEngine() async throws {
+        class ContextCapturingEngine: TranscriptionEngineProtocol {
+            var isModelLoaded: Bool = true
+            var capturedContext: String? = "not-set"
+
+            func loadModel(at path: URL) async throws {}
+            func unloadModel() {}
+
+            func transcribe(audioSamples: [Float], sampleRate: Int, context: String?) async throws -> String {
+                capturedContext = context
+                return "Hello"
+            }
+        }
+
+        class StubContextService: ScreenContextService {
+            override public func captureContext() async -> String? { "Joop LinkedIn" }
+        }
+
+        let engine = ContextCapturingEngine()
+        let insertionService = MockTextInsertionService()
+        let session = TranscriptionSession(
+            engine: engine,
+            textInsertionService: insertionService,
+            historyStore: historyStore,
+            modelTier: .base,
+            screenContextService: StubContextService()
+        )
+
+        session.start()
+        await session.processAudioBuffer([0.0, 0.0])
+        await session.stop()
+
+        XCTAssertEqual(engine.capturedContext, "Joop LinkedIn")
     }
 }

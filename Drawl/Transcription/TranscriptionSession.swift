@@ -13,18 +13,21 @@ public class TranscriptionSession {
     private var segmentCount = 0
     private var sourceAppName: String?
     private var lastTranscriptionTask: Task<Void, Never>?
-    
+    private let screenContextService: ScreenContextService?
+    private var screenContextTask: Task<String?, Never>?
+
     public init(
         engine: TranscriptionEngineProtocol,
         textInsertionService: TextInsertionServiceProtocol,
         historyStore: HistoryStore,
-        modelTier: ModelTier
+        modelTier: ModelTier,
+        screenContextService: ScreenContextService? = nil
     ) {
         self.engine = engine
         self.textInsertionService = textInsertionService
         self.historyStore = historyStore
         self.modelTier = modelTier
-        
+        self.screenContextService = screenContextService
         setupBufferProcessor()
     }
     
@@ -41,9 +44,17 @@ public class TranscriptionSession {
         self.startTime = Date()
         self.sessionText = ""
         self.segmentCount = 0
-        
+        self.screenContextTask?.cancel()
+        self.screenContextTask = nil
+
         if let activeApp = NSWorkspace.shared.frontmostApplication {
             self.sourceAppName = activeApp.localizedName
+        }
+
+        if let service = screenContextService {
+            self.screenContextTask = Task {
+                await service.captureContext()
+            }
         }
     }
     
@@ -77,7 +88,8 @@ public class TranscriptionSession {
     
     private func transcribeAndInsert(_ samples: [Float]) async {
         do {
-            let transcribed = try await engine.transcribe(audioSamples: samples, sampleRate: 16000)
+            let context = await screenContextTask?.value
+            let transcribed = try await engine.transcribe(audioSamples: samples, sampleRate: 16000, context: context)
             let trimmed = transcribed.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !trimmed.isEmpty else { return }
             

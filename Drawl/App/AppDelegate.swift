@@ -217,16 +217,23 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         guard appState == .idle else { return }
         
         let selectedModelTier = ModelTier.allCases.first { $0.id == preferencesStore.selectedModelId } ?? .base
+
+        let contextService: ScreenContextService? = preferencesStore.screenContextEnabled
+            ? ScreenContextService()
+            : nil
+
         currentSession = TranscriptionSession(
             engine: whisperEngine,
             textInsertionService: textInsertionService,
             historyStore: historyStore,
-            modelTier: selectedModelTier
+            modelTier: selectedModelTier,
+            screenContextService: contextService
         )
-        
+
         currentSession?.start()
-        
-        self.indicatorWindow = IndicatorWindow()
+
+        let indicatorColor = Color(hex: preferencesStore.indicatorColorHex)
+        self.indicatorWindow = IndicatorWindow(color: indicatorColor)
         self.indicatorWindow?.show(at: preferencesStore.indicatorPosition)
         
         do {
@@ -342,7 +349,7 @@ public class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         }
         
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 480, height: 580),
+            contentRect: NSRect(x: 0, y: 0, width: 480, height: 700),
             styleMask: [.titled, .closable, .miniaturizable],
             backing: .buffered,
             defer: false
