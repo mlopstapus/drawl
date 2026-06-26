@@ -93,19 +93,15 @@ public class TranscriptionSession {
             let trimmed = transcribed.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !trimmed.isEmpty else { return }
 
+            self.sessionText = self.sessionText.isEmpty ? trimmed : self.sessionText + " " + trimmed
+            self.segmentCount += 1
+
             if textInsertionService.canInsertIntoFocusedElement() {
                 try await textInsertionService.insertText(trimmed + " ")
             } else {
                 NSPasteboard.general.clearContents()
-                NSPasteboard.general.setString(trimmed, forType: .string)
+                NSPasteboard.general.setString(self.sessionText, forType: .string)
             }
-            
-            if self.sessionText.isEmpty {
-                self.sessionText = trimmed
-            } else {
-                self.sessionText += " " + trimmed
-            }
-            self.segmentCount += 1
             
         } catch {
             print("Transcription session segment error: \(error)")
