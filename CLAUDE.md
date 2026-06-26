@@ -15,7 +15,7 @@ macOS 14.0 (Sonoma). Raised from 13.0 because `SCScreenshotManager.captureImage`
 
 ## Local testing
 
-`bash scripts/create_dmg.sh` (no args) builds Release config and produces `build/Drawl.dmg`. Open, drag to Applications, launch from there.
+Requires `create-dmg`: `brew install create-dmg`. Then `bash scripts/create_dmg.sh` (no args) builds Release config and produces `build/Drawl.dmg`. Open, drag Drawl to the Applications shortcut, launch from there.
 
 ## Key conventions
 

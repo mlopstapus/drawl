@@ -49,6 +49,9 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO
 
+      - name: Install create-dmg
+        run: brew install create-dmg
+
       - name: Package DMG
         run: bash scripts/create_dmg.sh --app-path build/Build/Products/Release/Drawl.app
 

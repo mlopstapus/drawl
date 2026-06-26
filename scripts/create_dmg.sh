@@ -37,25 +37,26 @@ if [[ ! -d "$APP_PATH" ]]; then
   exit 1
 fi
 
+if ! command -v create-dmg &>/dev/null; then
+  echo "Error: create-dmg not found. Install with: brew install create-dmg" >&2
+  exit 1
+fi
+
 echo "=== Packaging Application ==="
-TEMP_DIR="build/dmg_temp"
-rm -rf "$TEMP_DIR"
-mkdir -p "$TEMP_DIR"
 
-echo "Copying Drawl.app to staging area..."
-cp -R "$APP_PATH" "$TEMP_DIR/"
-
-echo "Creating Applications shortcut..."
-ln -s /Applications "$TEMP_DIR/Applications"
-
-echo "Creating DMG..."
 DMG_PATH="build/Drawl.dmg"
 rm -f "$DMG_PATH"
 
-hdiutil create -volname "Drawl Installer" -srcfolder "$TEMP_DIR" -ov -format UDZO "$DMG_PATH"
-
-# Cleanup staging area
-rm -rf "$TEMP_DIR"
+create-dmg \
+  --volname "Drawl" \
+  --window-pos 200 120 \
+  --window-size 540 380 \
+  --icon-size 100 \
+  --icon "Drawl.app" 140 190 \
+  --hide-extension "Drawl.app" \
+  --app-drop-link 400 190 \
+  "$DMG_PATH" \
+  "$APP_PATH"
 
 echo "=== DMG Created Successfully ==="
 echo "DMG path: $(pwd)/$DMG_PATH"
