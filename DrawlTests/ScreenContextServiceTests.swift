@@ -48,9 +48,23 @@ final class ScreenContextServiceTests: XCTestCase {
     }
 
     func testResultCappedAt150Words() {
-        let manyWords = (1...200).map { "Word\($0)" }.joined(separator: " ")
-        let result = service.filterWords(from: manyWords)
+        var words: [String] = []
+        let bases = ["Aardvark", "Basilisk", "Chimera", "Dragon", "Elephant", "Falcon", "Gorilla", "Heron", "Iguana", "Jaguar"]
+        for i in 0..<200 {
+            words.append(bases[i % bases.count])
+        }
+        let result = service.filterWords(from: words.joined(separator: " "))
         let count = result.components(separatedBy: " ").filter { !$0.isEmpty }.count
         XCTAssertLessThanOrEqual(count, 150)
+    }
+
+    func testOCRNoiseIsRejected() {
+        let result = service.filterWords(from: "Mes5agin9 Rt$pon5iblo Be$t comlnotifie8tionsPfilter Joop Roberts")
+        XCTAssertFalse(result.contains("Mes5agin9"))
+        XCTAssertFalse(result.contains("Rt$pon5iblo"))
+        XCTAssertFalse(result.contains("Be$t"))
+        XCTAssertFalse(result.contains("comlnotifie8tionsPfilter"))
+        XCTAssertTrue(result.contains("Joop"))
+        XCTAssertTrue(result.contains("Roberts"))
     }
 }

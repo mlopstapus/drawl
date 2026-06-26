@@ -1,5 +1,8 @@
 import Foundation
 import WhisperKit
+import os
+
+private let whisperLogger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.ben.Drawl", category: "WhisperEngine")
 
 public class WhisperEngine: TranscriptionEngineProtocol {
     private var whisperKit: WhisperKit?
@@ -23,7 +26,7 @@ public class WhisperEngine: TranscriptionEngineProtocol {
         guard sampleRate == 16000 else {
             throw AppError.transcriptionFailed("Invalid sample rate: \(sampleRate). Whisper requires 16000Hz.")
         }
-        NSLog("[WhisperEngine] context: %{public}@", context ?? "(none)")
+        whisperLogger.log("context: \(context ?? "(none)", privacy: .public)")
         var options = DecodingOptions()
         if let context = context, !context.isEmpty, let tokenizer = wk.tokenizer {
             let allPromptTokens = tokenizer.encode(text: " " + context.trimmingCharacters(in: .whitespaces))

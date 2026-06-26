@@ -1,6 +1,9 @@
 import ScreenCaptureKit
 import Vision
 import AppKit
+import os
+
+private let screenContextLogger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.ben.Drawl", category: "ScreenContext")
 
 open class ScreenContextService {
     public init() {}
@@ -28,12 +31,12 @@ open class ScreenContextService {
             )
 
             let rawText = try await recognizeText(in: image)
-            NSLog("[ScreenContext] raw OCR (%d chars): %{public}@", rawText.count, String(rawText.prefix(300)))
+            screenContextLogger.log("raw OCR (\(rawText.count) chars): \(String(rawText.prefix(300)), privacy: .public)")
             let filtered = filterWords(from: rawText)
-            NSLog("[ScreenContext] filtered words: %{public}@", filtered.isEmpty ? "(none)" : filtered)
+            screenContextLogger.log("filtered words: \(filtered.isEmpty ? "(none)" : filtered, privacy: .public)")
             return filtered.isEmpty ? nil : filtered
         } catch {
-            NSLog("[ScreenContext] capture failed: %{public}@", error.localizedDescription)
+            screenContextLogger.error("capture failed: \(error.localizedDescription, privacy: .public)")
             return nil
         }
     }
@@ -62,6 +65,8 @@ open class ScreenContextService {
 
         for word in rawWords {
             guard word.count > 2, !seen.contains(word) else { continue }
+
+            guard word.unicodeScalars.allSatisfy({ CharacterSet.letters.contains($0) }) else { continue }
 
             let scalars = word.unicodeScalars
             let firstIsUpper = scalars.first.map { CharacterSet.uppercaseLetters.contains($0) } ?? false
